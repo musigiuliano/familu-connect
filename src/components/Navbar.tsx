@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart, Search, User, Users, Building } from "lucide-react";
-import familiuLogo from "@/assets/familu-logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,13 +16,10 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src={familiuLogo} 
-              alt="FamiLu" 
+              src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
+              alt="FamiLu - Home, Care, Community" 
               className="h-8 w-auto"
             />
-            <span className="text-xl font-bold bg-[var(--gradient-primary)] bg-clip-text text-transparent">
-              FamiLu
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Building, Search, Star, Shield, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import familiuLogo from "@/assets/familu-logo.png";
 import Navbar from "@/components/Navbar";
 
 const Index = () => {
@@ -44,8 +43,8 @@ const Index = () => {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-[var(--gradient-primary)] text-white">
         <div className="max-w-7xl mx-auto text-center">
           <img 
-            src={familiuLogo} 
-            alt="FamiLu" 
+            src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
+            alt="FamiLu - Home, Care, Community" 
             className="h-20 w-auto mx-auto mb-8"
           />
           <h1 className="text-5xl font-bold mb-6">
