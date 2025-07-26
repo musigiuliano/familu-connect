@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,11 +15,49 @@ const Login = () => {
     password: "",
     userType: "family"
   });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login data:", formData);
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Errore di accesso",
+          description: error.message === "Invalid login credentials" 
+            ? "Credenziali non valide. Verifica email e password." 
+            : error.message,
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Accesso effettuato",
+          description: "Benvenuto di nuovo!",
+        });
+        
+        // Redirect based on user type or to dashboard
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Si è verificato un errore durante l'accesso.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -97,8 +137,9 @@ const Login = () => {
                       variant="familu" 
                       size="lg" 
                       className="w-full"
+                      disabled={loading}
                     >
-                      Accedi come {type === "family" ? "Famiglia" : type === "operator" ? "Operatore" : "Organizzazione"}
+                      {loading ? "Accesso in corso..." : `Accedi come ${type === "family" ? "Famiglia" : type === "operator" ? "Operatore" : "Organizzazione"}`}
                     </Button>
                   </form>
                 </TabsContent>

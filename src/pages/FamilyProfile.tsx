@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,34 +16,128 @@ import AddressInput from "@/components/AddressInput";
 
 const FamilyProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [familyId, setFamilyId] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
   const [profileData, setProfileData] = useState({
-    familyName: "Famiglia Rossi",
-    email: "famiglia.rossi@email.com",
-    phone: "+39 123 456 7890",
-    location: "Roma, Italia",
-    emergencyContact: "Mario Rossi - +39 987 654 3210",
-    assistanceTypes: ["Assistenza Anziani", "Fisioterapia"],
-    medicalConditions: ["Diabete", "Problemi di mobilità"],
-    description: "Cerchiamo assistenza professionale per nostra nonna di 85 anni che vive con noi. Ha bisogno di supporto quotidiano e fisioterapia."
+    familyName: "",
+    email: "",
+    phone: "",
+    location: "",
+    address: "",
+    city: "",
+    postal_code: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    assistanceTypes: [] as string[],
+    medicalConditions: [] as string[],
+    description: "",
+    notes: ""
   });
 
-  const [activeRequests, setActiveRequests] = useState([
-    {
-      id: 1,
-      title: "Assistenza domiciliare per anziana",
-      description: "Cerchiamo operatore qualificato per assistenza quotidiana",
-      assistanceType: "Assistenza Anziani",
-      urgency: "Media",
-      status: "Attiva",
-      responses: 8,
-      createdAt: "3 giorni fa"
-    }
-  ]);
+  const [activeRequests, setActiveRequests] = useState([]);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Here you would save to backend
+  useEffect(() => {
+    if (user) {
+      loadFamilyProfile();
+    }
+  }, [user]);
+
+  const loadFamilyProfile = async () => {
+    try {
+      setLoading(true);
+      
+      // Check if user is a family member
+      const { data: familyMember } = await supabase
+        .from('family_members')
+        .select('family_id, families(*)')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (familyMember?.families) {
+        const family = familyMember.families as any;
+        setFamilyId(family.id);
+        setProfileData({
+          familyName: family.family_name || "",
+          email: family.email || "",
+          phone: family.phone || "",
+          location: family.address || "",
+          address: family.address || "",
+          city: family.city || "",
+          postal_code: family.postal_code || "",
+          emergencyContactName: family.emergency_contact_name || "",
+          emergencyContactPhone: family.emergency_contact_phone || "",
+          assistanceTypes: [],
+          medicalConditions: [],
+          description: family.notes || "",
+          notes: family.notes || ""
+        });
+      }
+    } catch (error) {
+      console.error('Error loading family profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel caricamento del profilo famiglia.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSave = async () => {
+    if (!familyId) return;
+    
+    try {
+      setLoading(true);
+      
+      const { error } = await supabase
+        .from('families')
+        .update({
+          family_name: profileData.familyName,
+          email: profileData.email,
+          phone: profileData.phone,
+          address: profileData.address,
+          city: profileData.city,
+          postal_code: profileData.postal_code,
+          emergency_contact_name: profileData.emergencyContactName,
+          emergency_contact_phone: profileData.emergencyContactPhone,
+          notes: profileData.notes,
+        })
+        .eq('id', familyId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Profilo aggiornato",
+        description: "I dati della famiglia sono stati salvati con successo.",
+      });
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving family profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel salvataggio del profilo.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">Caricamento profilo famiglia...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -154,12 +251,19 @@ const FamilyProfile = () => {
                   {isEditing ? (
                     <Input
                       id="emergencyContact"
-                      value={profileData.emergencyContact}
-                      onChange={(e) => setProfileData({...profileData, emergencyContact: e.target.value})}
+                      value={`${profileData.emergencyContactName} - ${profileData.emergencyContactPhone}`}
+                      onChange={(e) => {
+                        const parts = e.target.value.split(' - ');
+                        setProfileData({
+                          ...profileData, 
+                          emergencyContactName: parts[0] || "",
+                          emergencyContactPhone: parts[1] || ""
+                        });
+                      }}
                       placeholder="Nome - Numero di telefono"
                     />
                   ) : (
-                    <p className="text-sm text-muted-foreground">{profileData.emergencyContact}</p>
+                    <p className="text-sm text-muted-foreground">{`${profileData.emergencyContactName} - ${profileData.emergencyContactPhone}`}</p>
                   )}
                 </div>
 

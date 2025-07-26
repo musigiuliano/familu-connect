@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart, Search, User, Users, Building } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-border shadow-[var(--shadow-soft)]">
@@ -38,20 +45,41 @@ const Navbar = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Button 
-              variant="familu-outline" 
-              size="sm"
-              onClick={() => navigate("/login")}
-            >
-              Accedi
-            </Button>
-            <Button 
-              variant="familu" 
-              size="sm"
-              onClick={() => navigate("/register")}
-            >
-              Registrati
-            </Button>
+            {user ? (
+              <>
+                <Button 
+                  variant="familu-outline" 
+                  size="sm"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleSignOut}
+                >
+                  Esci
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="familu-outline" 
+                  size="sm"
+                  onClick={() => navigate("/login")}
+                >
+                  Accedi
+                </Button>
+                <Button 
+                  variant="familu" 
+                  size="sm"
+                  onClick={() => navigate("/register")}
+                >
+                  Registrati
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -94,26 +122,53 @@ const Navbar = () => {
                 Risorse
               </Link>
               <div className="flex flex-col space-y-2 px-3 pt-4">
-                <Button 
-                  variant="familu-outline" 
-                  size="sm"
-                  onClick={() => {
-                    navigate("/login");
-                    setIsOpen(false);
-                  }}
-                >
-                  Accedi
-                </Button>
-                <Button 
-                  variant="familu" 
-                  size="sm"
-                  onClick={() => {
-                    navigate("/register");
-                    setIsOpen(false);
-                  }}
-                >
-                  Registrati
-                </Button>
+                {user ? (
+                  <>
+                    <Button 
+                      variant="familu-outline" 
+                      size="sm"
+                      onClick={() => {
+                        navigate("/dashboard");
+                        setIsOpen(false);
+                      }}
+                    >
+                      Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        handleSignOut();
+                        setIsOpen(false);
+                      }}
+                    >
+                      Esci
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="familu-outline" 
+                      size="sm"
+                      onClick={() => {
+                        navigate("/login");
+                        setIsOpen(false);
+                      }}
+                    >
+                      Accedi
+                    </Button>
+                    <Button 
+                      variant="familu" 
+                      size="sm"
+                      onClick={() => {
+                        navigate("/register");
+                        setIsOpen(false);
+                      }}
+                    >
+                      Registrati
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,10 +20,104 @@ const Register = () => {
     termsAccepted: false,
     userType: "family"
   });
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log("Registration data:", formData);
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Le password non coincidono.",
+      });
+      return;
+    }
+
+    if (!formData.termsAccepted) {
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Devi accettare i termini di servizio per continuare.",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: formData.name.split(' ')[0],
+            last_name: formData.name.split(' ').slice(1).join(' '),
+            display_name: formData.name,
+            phone: formData.phone,
+            location: formData.location,
+            user_type: formData.userType
+          }
+        }
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Errore di registrazione",
+          description: error.message,
+        });
+        return;
+      }
+
+      if (data.user) {
+        // Create the appropriate profile based on user type
+        await createUserProfile(data.user.id, formData);
+        
+        toast({
+          title: "Registrazione completata",
+          description: "Account creato con successo! Verifica la tua email per attivare l'account.",
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Si è verificato un errore durante la registrazione.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createUserProfile = async (userId: string, data: typeof formData) => {
+    try {
+      if (data.userType === "family") {
+        await supabase.from('families').insert({
+          family_name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.location,
+        });
+      } else if (data.userType === "operator") {
+        await supabase.from('operators').insert({
+          user_id: userId,
+        });
+      } else if (data.userType === "organization") {
+        await supabase.from('organizations').insert({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.location,
+        });
+      }
+    } catch (error) {
+      console.error('Error creating profile:', error);
+    }
   };
   return <div className="min-h-screen bg-[var(--gradient-primary)] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -142,8 +238,8 @@ const Register = () => {
                       </Label>
                     </div>
 
-                    <Button type="submit" variant="familu" size="lg" disabled={!formData.termsAccepted} className="w-full text-sky-600 font-bold">
-                      Registrati come {type === "family" ? "Famiglia" : type === "operator" ? "Operatore" : "Organizzazione"}
+                    <Button type="submit" variant="familu" size="lg" disabled={!formData.termsAccepted || loading} className="w-full text-sky-600 font-bold">
+                      {loading ? "Registrazione in corso..." : `Registrati come ${type === "family" ? "Famiglia" : type === "operator" ? "Operatore" : "Organizzazione"}`}
                     </Button>
                   </form>
                 </TabsContent>)}
