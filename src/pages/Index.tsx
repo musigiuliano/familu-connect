@@ -39,7 +39,7 @@ const Index = () => {
 Operatori di Assistenza domiciliare</h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90 text-lime-500 font-extrabold">
             FamiLu è la piattaforma che mette in contatto le famiglie che necessitano di assistenza 
-            domiciliare con operatori e organizzazioni qualificate.
+            domiciliare con operatori e organizzazioni qualificate e verificate.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="secondary" size="xl" onClick={() => navigate("/search")} className="bg-white text-primary hover:bg-white/90">
