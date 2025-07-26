@@ -25,7 +25,7 @@ const Index = () => {
     description: "Offri la tua organizzazione e i tuoi servizi",
     icon: Building,
     color: "primary",
-    features: ["Dashboard completa", "Gestione team", "Analytics avanzate"],
+    features: ["Profilo organizzazione", "Presentazione del team", "Verifica contatti"],
     path: "/register"
   }];
   return <div className="min-h-screen bg-background">
