@@ -22,6 +22,7 @@ import {
   Lock
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import AddressInput from "@/components/AddressInput";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -168,12 +169,12 @@ const Search = () => {
                 />
               </div>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Dove? (es. Roma, Milano)"
+                <AddressInput
+                  label=""
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="pl-10"
+                  onChange={(address) => setLocation(address)}
+                  placeholder="Dove? (es. Roma, Milano)"
+                  id="location-search"
                 />
               </div>
               <Button variant="familu" size="lg" className="w-full">
