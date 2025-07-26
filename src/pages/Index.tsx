@@ -57,9 +57,7 @@ Operatori di Assistenza domiciliare</h1>
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Una Piattaforma, Tre Ruoli
-            </h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Una Piattaforma, bisogni e soluzioni che si incontrano</h2>
             <p className="text-lg text-muted-foreground">
               Scegli il ruolo che fa per te e inizia subito
             </p>
