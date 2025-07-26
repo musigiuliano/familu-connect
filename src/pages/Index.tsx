@@ -54,7 +54,7 @@ Operatori di Assistenza domiciliare</h1>
       </section>
 
       {/* User Types Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="px-4 sm:px-6 lg:px-8 py-[39px]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-foreground mb-4">Una Piattaforma, bisogni e soluzioni che si incontrano</h2>
