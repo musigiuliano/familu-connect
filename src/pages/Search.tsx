@@ -145,7 +145,7 @@ const Search = () => {
         experience: `${Math.max(...(op.operator_specializations?.map((os: any) => os.experience_years || 0) || [0]))}+ anni`,
         verified: true,
         available: op.status === 'active',
-        price: "€25/ora",
+        price: canSeeNames() ? "€25/ora" : "€**/ora",
         // TODO: add price data
         description: `Operatore specializzato con licenza ${op.license_number || 'N/A'}`,
         avatar: "/placeholder-avatar.jpg"
