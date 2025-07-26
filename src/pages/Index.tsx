@@ -114,7 +114,7 @@ Operatori di Assistenza domiciliare</h1>
                   <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <IconComponent className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2">{feature.title === "Sicurezza Garantita" ? "Maggiore sicurezza" : feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </div>;
           })}
