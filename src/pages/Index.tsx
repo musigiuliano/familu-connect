@@ -90,7 +90,7 @@ Operatori di Assistenza domiciliare</h1>
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl mb-4 font-bold text-sky-600">
               Perché Scegliere FamiLu?
             </h2>
           </div>
