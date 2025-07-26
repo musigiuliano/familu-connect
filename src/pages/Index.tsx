@@ -46,7 +46,7 @@ Operatori di Assistenza domiciliare</h1>
               <Search className="h-5 w-5 mr-2" />
               Trova Assistenza
             </Button>
-            <Button variant="familu-outline" size="xl" onClick={() => navigate("/register")} className="border-white text-white hover:bg-white hover:text-primary">
+            <Button variant="familu-outline" size="xl" onClick={() => navigate("/register")} className="border-white hover:bg-white text-lime-500">
               Registrati Gratis
             </Button>
           </div>
