@@ -173,7 +173,7 @@ const Pricing = () => {
                       className="w-full"
                       onClick={() => handleSubscribe(plan.name.toLowerCase())}
                     >
-                      {plan.name === "Friends" ? "Inizia Gratis" : "Inizia Prova Gratuita"}
+                      {plan.name === "Friends" ? "Inizia Gratis" : "Sottoscrivi Ora"}
                     </Button>
                   )}
                 </CardContent>
@@ -259,10 +259,10 @@ const Pricing = () => {
               </p>
             </div>
             <div className="text-left">
-              <h3 className="font-semibold mb-2">È disponibile una prova gratuita?</h3>
+              <h3 className="font-semibold mb-2">Come funziona il piano gratuito?</h3>
               <p className="text-muted-foreground text-sm">
-                Sì, tutti i piani a pagamento includono una prova gratuita di 14 giorni.
-                Nessun impegno, puoi cancellare in qualsiasi momento.
+                Il piano Friends è completamente gratuito e permette di iniziare a usare FamiLu
+                con funzionalità base. Nessun costo nascosto o limitazioni di tempo.
               </p>
             </div>
             <div className="text-left">
@@ -291,7 +291,7 @@ const Pricing = () => {
             Unisciti a migliaia di famiglie e operatori che già si fidano di FamiLu
           </p>
           <Button variant="secondary" size="xl" className="bg-white text-primary hover:bg-white/90">
-            Inizia la Tua Prova Gratuita
+            Inizia Subito con FamiLu
           </Button>
         </div>
       </div>

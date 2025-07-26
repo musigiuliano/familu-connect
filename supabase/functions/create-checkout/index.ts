@@ -50,14 +50,14 @@ serve(async (req) => {
     if (plan === "network") {
       priceData = {
         currency: "eur",
-        product_data: { name: "Network Plan" },
+        product_data: { name: "Network Plan - Accesso Completo" },
         unit_amount: 1999, // €19.99
         recurring: { interval: "month" },
       };
     } else if (plan === "alliance") {
       priceData = {
         currency: "eur",
-        product_data: { name: "Alliance Plan" },
+        product_data: { name: "Alliance Plan - Accesso Premium" },
         unit_amount: 4999, // €49.99
         recurring: { interval: "month" },
       };
