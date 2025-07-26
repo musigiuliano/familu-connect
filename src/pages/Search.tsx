@@ -18,11 +18,16 @@ import {
   Phone,
   Mail,
   Shield,
-  Award
+  Award,
+  Lock
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Search = () => {
+  const { user } = useAuth();
+  const { subscribed, subscriptionTier } = useSubscription();
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
   const [filters, setFilters] = useState({
@@ -31,6 +36,32 @@ const Search = () => {
     availability: "all",
     rating: "all"
   });
+
+  // Function to determine if names should be visible
+  const canSeeNames = () => {
+    if (!user) return false;
+    if (!subscribed) return false;
+    return true;
+  };
+
+  // Function to hide names based on subscription tier
+  const getDisplayName = (name: string, type: "operator" | "organization") => {
+    if (!canSeeNames()) {
+      return type === "operator" ? "Operatore Verificato" : "Organizzazione Verificata";
+    }
+    
+    // If user is subscribed but has basic tier, show partial name
+    if (subscriptionTier === "Basic") {
+      const words = name.split(" ");
+      if (words.length > 1) {
+        return `${words[0]} ${words[1].charAt(0)}.`;
+      }
+      return `${name.charAt(0)}***`;
+    }
+    
+    // Premium and Enterprise users can see full names
+    return name;
+  };
 
   const mockResults = [
     {
@@ -237,7 +268,17 @@ const Search = () => {
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
                           <div>
                             <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="text-lg font-semibold">{result.name}</h3>
+                              <h3 className="text-lg font-semibold">
+                                {getDisplayName(result.name, result.type as "operator" | "organization")}
+                              </h3>
+                              {!canSeeNames() && (
+                                <div className="flex items-center space-x-1">
+                                  <Lock className="h-4 w-4 text-muted-foreground" />
+                                  <Badge variant="outline" className="text-xs">
+                                    Accesso Premium
+                                  </Badge>
+                                </div>
+                              )}
                               {result.verified && (
                                 <Shield className="h-4 w-4 text-familu-green" />
                               )}
@@ -298,17 +339,31 @@ const Search = () => {
 
                         {/* Actions */}
                         <div className="flex flex-wrap gap-3">
-                          <Button variant="familu" size="sm">
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Invia Messaggio
-                          </Button>
-                          <Button variant="familu-outline" size="sm">
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Prenota Appuntamento
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            Visualizza Profilo
-                          </Button>
+                          {canSeeNames() ? (
+                            <>
+                              <Button variant="familu" size="sm">
+                                <MessageCircle className="h-4 w-4 mr-2" />
+                                Invia Messaggio
+                              </Button>
+                              <Button variant="familu-outline" size="sm">
+                                <Calendar className="h-4 w-4 mr-2" />
+                                Prenota Appuntamento
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                Visualizza Profilo
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button variant="outline" size="sm" disabled>
+                                <Lock className="h-4 w-4 mr-2" />
+                                Accedi per Contattare
+                              </Button>
+                              <Button variant="familu" size="sm" onClick={() => window.location.href = '/pricing'}>
+                                Ottieni Accesso Premium
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
