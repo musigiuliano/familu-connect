@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,34 +25,92 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import AddressInput from "@/components/AddressInput";
+import SpecializationSelector from "@/components/SpecializationSelector";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const OrganizationProfile = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
-    name: "AssistCare Roma",
-    email: "info@assistcare-roma.it",
-    phone: "+39 06 123 4567",
-    website: "www.assistcare-roma.it",
-    address: "Via dei Servizi 123, 00100 Roma",
-    description: "AssistCare Roma è un'organizzazione leader nell'assistenza domiciliare con oltre 10 anni di esperienza. Offriamo servizi personalizzati di alta qualità per famiglie e anziani.",
-    foundedYear: "2013",
-    teamSize: "25",
-    licenseNumber: "ASL-RM-001234",
-    services: [
-      "Assistenza Domiciliare 24h",
-      "Fisioterapia a Domicilio", 
-      "Supporto Psicologico",
-      "Assistenza Medica Specialistica",
-      "Riabilitazione Post-Operatoria",
-      "Supporto Familiare"
-    ],
-    serviceAreas: ["Roma Centro", "Roma Nord", "Roma Sud", "Castelli Romani"],
-    certifications: [
-      { name: "Certificazione ISO 9001", year: "2022" },
-      { name: "Accreditamento ASL Lazio", year: "2023" },
-      { name: "Certificazione Qualità Servizi", year: "2023" }
-    ]
+    name: "",
+    email: "",
+    phone: "",
+    website: "",
+    address: "",
+    description: "",
+    organization_type: "",
+    specializations: [] as any[]
   });
+
+  useEffect(() => {
+    if (user) {
+      loadOrganizationProfile();
+    }
+  }, [user]);
+
+  const loadOrganizationProfile = async () => {
+    try {
+      setLoading(true);
+      
+      // Load organization profile
+      const { data: orgData, error: orgError } = await supabase
+        .from('organizations')
+        .select(`
+          *,
+          organization_specializations(
+            id,
+            team_size,
+            certification_level,
+            notes,
+            specializations(*)
+          )
+        `)
+        .maybeSingle();
+
+      if (orgError && orgError.code !== 'PGRST116') {
+        throw orgError;
+      }
+
+      if (orgData) {
+        setOrganizationId(orgData.id);
+        
+        const specializations = orgData.organization_specializations?.map((os: any) => ({
+          id: os.specializations.id,
+          name: os.specializations.name,
+          description: os.specializations.description,
+          category: os.specializations.category,
+          team_size: os.team_size,
+          certification_level: os.certification_level,
+          notes: os.notes
+        })) || [];
+
+        setProfileData({
+          name: orgData.name || "",
+          email: orgData.email || "",
+          phone: orgData.phone || "",
+          website: orgData.website || "",
+          address: orgData.address || "",
+          description: orgData.description || "",
+          organization_type: orgData.organization_type || "",
+          specializations
+        });
+      }
+    } catch (error) {
+      console.error('Error loading organization profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel caricamento del profilo organizzazione.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [teamMembers] = useState([
     {
@@ -98,12 +156,118 @@ const OrganizationProfile = () => {
     }
   ]);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Here you would save to backend
+  const handleSave = async () => {
+    if (!organizationId && !user) return;
+    
+    try {
+      setLoading(true);
+      
+      // Update or create organization profile
+      if (organizationId) {
+        const { error } = await supabase
+          .from('organizations')
+          .update({
+            name: profileData.name,
+            email: profileData.email,
+            phone: profileData.phone,
+            website: profileData.website,
+            address: profileData.address,
+            description: profileData.description,
+            organization_type: profileData.organization_type,
+          })
+          .eq('id', organizationId);
+        if (error) throw error;
+      } else {
+        // Create new organization profile
+        const { data: newOrg, error } = await supabase
+          .from('organizations')
+          .insert({
+            name: profileData.name,
+            email: profileData.email,
+            phone: profileData.phone,
+            website: profileData.website,
+            address: profileData.address,
+            description: profileData.description,
+            organization_type: profileData.organization_type,
+          })
+          .select()
+          .single();
+        
+        if (error) throw error;
+        setOrganizationId(newOrg.id);
+      }
+
+      toast({
+        title: "Profilo aggiornato",
+        description: "I dati dell'organizzazione sono stati salvati con successo.",
+      });
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving organization profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel salvataggio del profilo.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+  const handleSpecializationsChange = async (specializations: any[]) => {
+    if (!organizationId) return;
+    
+    try {
+      // Delete existing specializations
+      await supabase
+        .from('organization_specializations')
+        .delete()
+        .eq('organization_id', organizationId);
+
+      // Insert new specializations
+      if (specializations.length > 0) {
+        const specializationsToInsert = specializations.map(spec => ({
+          organization_id: organizationId,
+          specialization_id: spec.id,
+          team_size: spec.team_size,
+          certification_level: spec.certification_level,
+          notes: spec.notes
+        }));
+
+        const { error } = await supabase
+          .from('organization_specializations')
+          .insert(specializationsToInsert);
+
+        if (error) throw error;
+      }
+
+      setProfileData({ ...profileData, specializations });
+      
+      toast({
+        title: "Specializzazioni aggiornate",
+        description: "Le specializzazioni dell'organizzazione sono state salvate.",
+      });
+    } catch (error) {
+      console.error('Error updating specializations:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel salvataggio delle specializzazioni.",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">Caricamento profilo organizzazione...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -159,27 +323,27 @@ const OrganizationProfile = () => {
                   
                   <h3 className="text-xl font-bold mb-2">{profileData.name}</h3>
                   
-                  <div className="flex items-center justify-center space-x-1 mb-2">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{averageRating.toFixed(1)}</span>
-                    <span className="text-muted-foreground">({reviews.length} recensioni)</span>
-                  </div>
+                   <div className="flex items-center justify-center space-x-1 mb-2">
+                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                     <span className="font-medium">4.7</span>
+                     <span className="text-muted-foreground">(24 recensioni)</span>
+                   </div>
                   
                   <Badge variant="secondary" className="mb-4">
                     <Award className="h-3 w-3 mr-1" />
                     Certificata
                   </Badge>
                   
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-center space-x-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span>{profileData.teamSize} membri del team</span>
-                    </div>
-                    <div className="flex items-center justify-center space-x-2">
-                      <Building className="h-4 w-4 text-muted-foreground" />
-                      <span>Fondata nel {profileData.foundedYear}</span>
-                    </div>
-                  </div>
+                   <div className="space-y-2 text-sm">
+                     <div className="flex items-center justify-center space-x-2">
+                       <Users className="h-4 w-4 text-muted-foreground" />
+                       <span>Team qualificato</span>
+                     </div>
+                     <div className="flex items-center justify-center space-x-2">
+                       <Building className="h-4 w-4 text-muted-foreground" />
+                       <span>Organizzazione verificata</span>
+                     </div>
+                   </div>
                 </CardContent>
               </Card>
 
@@ -244,22 +408,36 @@ const OrganizationProfile = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    {isEditing ? (
-                      <AddressInput
-                        label="Indirizzo"
-                        value={profileData.address}
-                        onChange={(address) => setProfileData({...profileData, address: address})}
-                        placeholder="Inserisci l'indirizzo completo"
-                        id="address"
-                      />
-                    ) : (
-                      <>
-                        <Label htmlFor="address">Indirizzo</Label>
-                        <p className="text-sm text-muted-foreground">{profileData.address}</p>
-                      </>
-                    )}
-                  </div>
+                   <div className="space-y-2">
+                     {isEditing ? (
+                       <AddressInput
+                         label="Indirizzo"
+                         value={profileData.address}
+                         onChange={(address) => setProfileData({...profileData, address: address})}
+                         placeholder="Inserisci l'indirizzo completo"
+                         id="address"
+                       />
+                     ) : (
+                       <>
+                         <Label htmlFor="address">Indirizzo</Label>
+                         <p className="text-sm text-muted-foreground">{profileData.address}</p>
+                       </>
+                     )}
+                   </div>
+
+                   <div className="space-y-2">
+                     <Label htmlFor="organization_type">Tipo Organizzazione</Label>
+                     {isEditing ? (
+                       <Input
+                         id="organization_type"
+                         value={profileData.organization_type}
+                         onChange={(e) => setProfileData({...profileData, organization_type: e.target.value})}
+                         placeholder="es. Casa di Cura, Centro Riabilitativo"
+                       />
+                     ) : (
+                       <p className="text-sm text-muted-foreground">{profileData.organization_type}</p>
+                     )}
+                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Descrizione</Label>
@@ -276,110 +454,19 @@ const OrganizationProfile = () => {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="foundedYear">Anno di Fondazione</Label>
-                      {isEditing ? (
-                        <Input
-                          id="foundedYear"
-                          value={profileData.foundedYear}
-                          onChange={(e) => setProfileData({...profileData, foundedYear: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.foundedYear}</p>
-                      )}
-                    </div>
+                 </CardContent>
+               </Card>
+             </div>
+           </TabsContent>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="teamSize">Dimensione Team</Label>
-                      {isEditing ? (
-                        <Input
-                          id="teamSize"
-                          value={profileData.teamSize}
-                          onChange={(e) => setProfileData({...profileData, teamSize: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.teamSize} professionisti</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="licenseNumber">Numero Licenza</Label>
-                      {isEditing ? (
-                        <Input
-                          id="licenseNumber"
-                          value={profileData.licenseNumber}
-                          onChange={(e) => setProfileData({...profileData, licenseNumber: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.licenseNumber}</p>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Certifications */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <CheckCircle className="h-5 w-5 text-familu-green" />
-                  <span>Certificazioni</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {profileData.certifications.map((cert, index) => (
-                    <div key={index} className="p-4 border border-border rounded-lg">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-medium">{cert.name}</h4>
-                          <p className="text-sm text-muted-foreground">Anno: {cert.year}</p>
-                        </div>
-                        <CheckCircle className="h-5 w-5 text-familu-green" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="services" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Servizi Offerti</CardTitle>
-                <CardDescription>Gestisci l'elenco dei servizi che la tua organizzazione offre</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {profileData.services.map((service, index) => (
-                      <div key={index} className="p-4 border border-border rounded-lg flex justify-between items-center">
-                        <span className="font-medium">{service}</span>
-                        {isEditing && (
-                          <X 
-                            className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-destructive" 
-                            onClick={() => {
-                              const newServices = profileData.services.filter((_, i) => i !== index);
-                              setProfileData({...profileData, services: newServices});
-                            }} 
-                          />
-                        )}
-                      </div>
-                    ))}
-                    {isEditing && (
-                      <Button variant="familu-outline" className="w-full">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Aggiungi Servizio
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+           <TabsContent value="services" className="mt-6">
+             <SpecializationSelector
+               selectedSpecializations={profileData.specializations}
+               onSpecializationsChange={handleSpecializationsChange}
+               type="organization"
+               readOnly={!isEditing}
+             />
+           </TabsContent>
 
           <TabsContent value="team" className="mt-6">
             <Card>
@@ -426,31 +513,9 @@ const OrganizationProfile = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {profileData.serviceAreas.map((area, index) => (
-                      <div key={index} className="p-3 border border-border rounded-lg flex justify-between items-center">
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="h-4 w-4 text-familu-blue" />
-                          <span className="font-medium">{area}</span>
-                        </div>
-                        {isEditing && (
-                          <X 
-                            className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-destructive" 
-                            onClick={() => {
-                              const newAreas = profileData.serviceAreas.filter((_, i) => i !== index);
-                              setProfileData({...profileData, serviceAreas: newAreas});
-                            }} 
-                          />
-                        )}
-                      </div>
-                    ))}
-                    {isEditing && (
-                      <Button variant="familu-outline">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Aggiungi Area
-                      </Button>
-                    )}
-                  </div>
+                  <p className="text-muted-foreground">
+                    Funzionalità per gestire le aree di servizio in fase di sviluppo.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -464,7 +529,7 @@ const OrganizationProfile = () => {
                   <span>Recensioni e Valutazioni</span>
                 </CardTitle>
                 <CardDescription>
-                  Valutazione media: {averageRating.toFixed(1)}/5 da {reviews.length} recensioni
+                  Valutazione media: 4.7/5 da {reviews.length} recensioni
                 </CardDescription>
               </CardHeader>
               <CardContent>

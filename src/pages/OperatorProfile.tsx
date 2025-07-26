@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,22 +25,28 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import AddressInput from "@/components/AddressInput";
+import SpecializationSelector from "@/components/SpecializationSelector";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const OperatorProfile = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [operatorId, setOperatorId] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
-    name: "Maria Bianchi",
-    email: "maria.bianchi@email.com",
-    phone: "+39 123 456 7890",
-    location: "Roma, Italia",
-    bio: "Fisioterapista specializzata con oltre 5 anni di esperienza nell'assistenza domiciliare. Appassionata di aiutare le persone a migliorare la loro qualità di vita attraverso trattamenti personalizzati.",
-    experience: "5+ anni",
-    hourlyRate: "25",
-    skills: ["Fisioterapia", "Assistenza Anziani", "Riabilitazione Motoria", "Terapia del Dolore"],
-    certifications: [
-      { name: "Laurea in Fisioterapia", institution: "Università La Sapienza", year: "2018" },
-      { name: "Certificazione Assistenza Domiciliare", institution: "ASL Roma 1", year: "2020" }
-    ],
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    address: "",
+    bio: "",
+    experience_years: 0,
+    hourly_rate: 0,
+    license_number: "",
+    specializations: [] as any[],
     availability: {
       monday: { available: true, hours: "09:00-18:00" },
       tuesday: { available: true, hours: "09:00-18:00" },
@@ -51,6 +57,93 @@ const OperatorProfile = () => {
       sunday: { available: false, hours: "" }
     }
   });
+
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (user) {
+      loadOperatorProfile();
+    }
+  }, [user]);
+
+  const loadOperatorProfile = async () => {
+    try {
+      setLoading(true);
+      
+      // Load operator profile
+      const { data: operatorData, error: operatorError } = await supabase
+        .from('operators')
+        .select(`
+          *,
+          operator_specializations(
+            id,
+            experience_years,
+            certification_level,
+            notes,
+            specializations(*)
+          )
+        `)
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (operatorError && operatorError.code !== 'PGRST116') {
+        throw operatorError;
+      }
+
+      if (operatorData) {
+        setOperatorId(operatorData.id);
+        
+        // Load user profile for additional info
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        const specializations = operatorData.operator_specializations?.map((os: any) => ({
+          id: os.specializations.id,
+          name: os.specializations.name,
+          description: os.specializations.description,
+          category: os.specializations.category,
+          experience_years: os.experience_years,
+          certification_level: os.certification_level,
+          notes: os.notes
+        })) || [];
+
+        setProfileData({
+          first_name: userProfile?.first_name || "",
+          last_name: userProfile?.last_name || "",
+          email: user?.email || "",
+          phone: "",
+          address: "",
+          bio: "",
+          experience_years: 0,
+          hourly_rate: 0,
+          license_number: operatorData.license_number || "",
+          specializations,
+          availability: {
+            monday: { available: true, hours: "09:00-18:00" },
+            tuesday: { available: true, hours: "09:00-18:00" },
+            wednesday: { available: true, hours: "09:00-17:00" },
+            thursday: { available: true, hours: "09:00-18:00" },
+            friday: { available: true, hours: "09:00-16:00" },
+            saturday: { available: false, hours: "" },
+            sunday: { available: false, hours: "" }
+          }
+        });
+        setProfile(userProfile);
+      }
+    } catch (error) {
+      console.error('Error loading operator profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel caricamento del profilo operatore.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [reviews] = useState([
     {
@@ -69,12 +162,118 @@ const OperatorProfile = () => {
     }
   ]);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Here you would save to backend
+  const handleSave = async () => {
+    if (!operatorId && !user) return;
+    
+    try {
+      setLoading(true);
+      
+      // Update or create operator profile
+      if (operatorId) {
+        const { error } = await supabase
+          .from('operators')
+          .update({
+            license_number: profileData.license_number,
+          })
+          .eq('id', operatorId);
+        if (error) throw error;
+      } else {
+        // Create new operator profile
+        const { data: newOperator, error } = await supabase
+          .from('operators')
+          .insert({
+            user_id: user?.id,
+            license_number: profileData.license_number,
+          })
+          .select()
+          .single();
+        
+        if (error) throw error;
+        setOperatorId(newOperator.id);
+      }
+
+      // Update user profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          first_name: profileData.first_name,
+          last_name: profileData.last_name,
+        })
+        .eq('user_id', user?.id);
+
+      if (profileError) throw profileError;
+
+      toast({
+        title: "Profilo aggiornato",
+        description: "I dati sono stati salvati con successo.",
+      });
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving operator profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel salvataggio del profilo.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+  const handleSpecializationsChange = async (specializations: any[]) => {
+    if (!operatorId) return;
+    
+    try {
+      // Delete existing specializations
+      await supabase
+        .from('operator_specializations')
+        .delete()
+        .eq('operator_id', operatorId);
+
+      // Insert new specializations
+      if (specializations.length > 0) {
+        const specializationsToInsert = specializations.map(spec => ({
+          operator_id: operatorId,
+          specialization_id: spec.id,
+          experience_years: spec.experience_years,
+          certification_level: spec.certification_level,
+          notes: spec.notes
+        }));
+
+        const { error } = await supabase
+          .from('operator_specializations')
+          .insert(specializationsToInsert);
+
+        if (error) throw error;
+      }
+
+      setProfileData({ ...profileData, specializations });
+      
+      toast({
+        title: "Specializzazioni aggiornate",
+        description: "Le tue specializzazioni sono state salvate.",
+      });
+    } catch (error) {
+      console.error('Error updating specializations:', error);
+      toast({
+        variant: "destructive",
+        title: "Errore",
+        description: "Errore nel salvataggio delle specializzazioni.",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">Caricamento profilo operatore...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -113,7 +312,7 @@ const OperatorProfile = () => {
                     <Avatar className="h-32 w-32 mx-auto">
                       <AvatarImage src="/placeholder-avatar.jpg" />
                       <AvatarFallback className="text-2xl">
-                        {profileData.name.split(' ').map(n => n[0]).join('')}
+                        {(profileData.first_name + ' ' + profileData.last_name).split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     {isEditing && (
@@ -127,28 +326,28 @@ const OperatorProfile = () => {
                     )}
                   </div>
                   
-                  <h3 className="text-xl font-bold mb-2">{profileData.name}</h3>
-                  <div className="flex items-center justify-center space-x-1 mb-2">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{averageRating.toFixed(1)}</span>
-                    <span className="text-muted-foreground">({reviews.length} recensioni)</span>
-                  </div>
+                  <h3 className="text-xl font-bold mb-2">{profileData.first_name} {profileData.last_name}</h3>
+                   <div className="flex items-center justify-center space-x-1 mb-2">
+                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                     <span className="font-medium">4.8</span>
+                     <span className="text-muted-foreground">(12 recensioni)</span>
+                   </div>
                   
                   <Badge variant="secondary" className="mb-4">
                     <Award className="h-3 w-3 mr-1" />
                     Verificato
                   </Badge>
                   
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-center space-x-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>{profileData.location}</span>
-                    </div>
-                    <div className="flex items-center justify-center space-x-2">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span>{profileData.experience} di esperienza</span>
-                    </div>
-                  </div>
+                   <div className="space-y-2 text-sm">
+                     <div className="flex items-center justify-center space-x-2">
+                       <MapPin className="h-4 w-4 text-muted-foreground" />
+                       <span>{profileData.address || "Indirizzo non specificato"}</span>
+                     </div>
+                     <div className="flex items-center justify-center space-x-2">
+                       <Clock className="h-4 w-4 text-muted-foreground" />
+                       <span>{profileData.experience_years} anni di esperienza</span>
+                     </div>
+                   </div>
                 </CardContent>
               </Card>
 
@@ -157,162 +356,64 @@ const OperatorProfile = () => {
                 <CardHeader>
                   <CardTitle>Informazioni Professionali</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Nome e Cognome</Label>
-                      {isEditing ? (
-                        <Input
-                          id="name"
-                          value={profileData.name}
-                          onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.name}</p>
-                      )}
-                    </div>
+                 <CardContent className="space-y-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div className="space-y-2">
+                       <Label htmlFor="first_name">Nome</Label>
+                       {isEditing ? (
+                         <Input
+                           id="first_name"
+                           value={profileData.first_name}
+                           onChange={(e) => setProfileData({...profileData, first_name: e.target.value})}
+                         />
+                       ) : (
+                         <p className="text-sm text-muted-foreground">{profileData.first_name}</p>
+                       )}
+                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      {isEditing ? (
-                        <Input
-                          id="email"
-                          type="email"
-                          value={profileData.email}
-                          onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.email}</p>
-                      )}
-                    </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="last_name">Cognome</Label>
+                       {isEditing ? (
+                         <Input
+                           id="last_name"
+                           value={profileData.last_name}
+                           onChange={(e) => setProfileData({...profileData, last_name: e.target.value})}
+                         />
+                       ) : (
+                         <p className="text-sm text-muted-foreground">{profileData.last_name}</p>
+                       )}
+                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Telefono</Label>
-                      {isEditing ? (
-                        <Input
-                          id="phone"
-                          value={profileData.phone}
-                          onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{profileData.phone}</p>
-                      )}
-                    </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="email">Email</Label>
+                       <p className="text-sm text-muted-foreground">{profileData.email}</p>
+                     </div>
 
-                    <div className="space-y-2">
-                      {isEditing ? (
-                        <AddressInput
-                          label="Località"
-                          value={profileData.location}
-                          onChange={(address) => setProfileData({...profileData, location: address})}
-                          placeholder="Inserisci l'indirizzo completo"
-                          id="location"
-                        />
-                      ) : (
-                        <>
-                          <Label htmlFor="location">Località</Label>
-                          <p className="text-sm text-muted-foreground">{profileData.location}</p>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="hourlyRate">Tariffa Oraria (€)</Label>
-                      {isEditing ? (
-                        <Input
-                          id="hourlyRate"
-                          type="number"
-                          value={profileData.hourlyRate}
-                          onChange={(e) => setProfileData({...profileData, hourlyRate: e.target.value})}
-                        />
-                      ) : (
-                        <p className="text-sm text-muted-foreground">€{profileData.hourlyRate}/ora</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="bio">Biografia Professionale</Label>
-                    {isEditing ? (
-                      <Textarea
-                        id="bio"
-                        value={profileData.bio}
-                        onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
-                        rows={4}
-                        placeholder="Descrivi la tua esperienza e approccio professionale..."
-                      />
-                    ) : (
-                      <p className="text-sm text-muted-foreground">{profileData.bio}</p>
-                    )}
-                  </div>
-                </CardContent>
+                     <div className="space-y-2">
+                       <Label htmlFor="license_number">Numero Licenza</Label>
+                       {isEditing ? (
+                         <Input
+                           id="license_number"
+                           value={profileData.license_number}
+                           onChange={(e) => setProfileData({...profileData, license_number: e.target.value})}
+                         />
+                       ) : (
+                         <p className="text-sm text-muted-foreground">{profileData.license_number}</p>
+                       )}
+                     </div>
+                   </div>
+                 </CardContent>
               </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="skills" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Skills */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Competenze</CardTitle>
-                  <CardDescription>Le tue specializzazioni professionali</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-2">
-                      {profileData.skills.map((skill, index) => (
-                        <Badge key={index} variant="outline" className="flex items-center gap-1">
-                          {skill}
-                          {isEditing && (
-                            <X className="h-3 w-3 cursor-pointer" onClick={() => {
-                              const newSkills = profileData.skills.filter((_, i) => i !== index);
-                              setProfileData({...profileData, skills: newSkills});
-                            }} />
-                          )}
-                        </Badge>
-                      ))}
-                      {isEditing && (
-                        <Button variant="ghost" size="sm">
-                          <Plus className="h-4 w-4 mr-1" />
-                          Aggiungi
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Certifications */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Certificazioni</CardTitle>
-                  <CardDescription>Titoli e qualifiche professionali</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {profileData.certifications.map((cert, index) => (
-                      <div key={index} className="p-3 border border-border rounded-lg">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{cert.name}</h4>
-                            <p className="text-sm text-muted-foreground">{cert.institution}</p>
-                            <p className="text-xs text-muted-foreground">Anno: {cert.year}</p>
-                          </div>
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                      </div>
-                    ))}
-                    {isEditing && (
-                      <Button variant="familu-outline" size="sm" className="w-full">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Aggiungi Certificazione
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <SpecializationSelector
+              selectedSpecializations={profileData.specializations}
+              onSpecializationsChange={handleSpecializationsChange}
+              type="operator"
+              readOnly={!isEditing}
+            />
           </TabsContent>
 
           <TabsContent value="availability" className="mt-6">
@@ -387,7 +488,7 @@ const OperatorProfile = () => {
                   <span>Recensioni e Valutazioni</span>
                 </CardTitle>
                 <CardDescription>
-                  Valutazione media: {averageRating.toFixed(1)}/5 da {reviews.length} recensioni
+                  Valutazione media: 4.8/5 da {reviews.length} recensioni
                 </CardDescription>
               </CardHeader>
               <CardContent>

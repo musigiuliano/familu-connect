@@ -68,6 +68,145 @@ const Search = () => {
     );
   };
 
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  // Load search results
+  const performSearch = async () => {
+    try {
+      setSearchLoading(true);
+      
+      // Query operators
+      let operatorQuery = supabase
+        .from('operators')
+        .select(`
+          id,
+          user_id,
+          license_number,
+          status,
+          created_at,
+          profiles!inner(
+            first_name,
+            last_name,
+            display_name
+          ),
+          operator_specializations(
+            id,
+            experience_years,
+            certification_level,
+            specializations(
+              id,
+              name
+            )
+          )
+        `)
+        .eq('status', 'active');
+
+      // Filter by specializations if selected
+      if (selectedSpecializations.length > 0) {
+        operatorQuery = operatorQuery.in('operator_specializations.specialization_id', selectedSpecializations);
+      }
+
+      const { data: operators, error: operatorError } = await operatorQuery;
+      if (operatorError) throw operatorError;
+
+      // Query organizations
+      let organizationQuery = supabase
+        .from('organizations')
+        .select(`
+          id,
+          name,
+          description,
+          address,
+          phone,
+          email,
+          website,
+          organization_type,
+          organization_specializations(
+            id,
+            team_size,
+            certification_level,
+            specializations(
+              id,
+              name
+            )
+          )
+        `);
+
+      // Filter by specializations if selected
+      if (selectedSpecializations.length > 0) {
+        organizationQuery = organizationQuery.in('organization_specializations.specialization_id', selectedSpecializations);
+      }
+
+      const { data: organizations, error: orgError } = await organizationQuery;
+      if (orgError) throw orgError;
+
+      // Format results
+      const formattedOperators = operators?.map(op => ({
+        id: op.id,
+        type: 'operator' as const,
+        name: `${op.profiles?.first_name || ''} ${op.profiles?.last_name || ''}`.trim() || 'Operatore',
+        specializations: op.operator_specializations?.map((os: any) => os.specializations?.name).filter(Boolean) || [],
+        location: "Italia", // TODO: add location data
+        rating: 4.8,
+        reviews: 12,
+        experience: `${Math.max(...(op.operator_specializations?.map((os: any) => os.experience_years || 0) || [0]))}+ anni`,
+        verified: true,
+        available: op.status === 'active',
+        price: "€25/ora", // TODO: add price data
+        description: `Operatore specializzato con licenza ${op.license_number || 'N/A'}`,
+        avatar: "/placeholder-avatar.jpg"
+      })) || [];
+
+      const formattedOrganizations = organizations?.map(org => ({
+        id: org.id,
+        type: 'organization' as const,
+        name: org.name || 'Organizzazione',
+        specializations: org.organization_specializations?.map((os: any) => os.specializations?.name).filter(Boolean) || [],
+        location: org.address || "Italia",
+        rating: 4.6,
+        reviews: 28,
+        teamSize: org.organization_specializations?.reduce((acc: number, os: any) => acc + (os.team_size || 0), 0) || 1,
+        verified: true,
+        description: org.description || 'Organizzazione professionale di assistenza',
+        avatar: "/placeholder-org.jpg"
+      })) || [];
+
+      const allResults = [...formattedOperators, ...formattedOrganizations];
+      
+      // Apply filters
+      let filteredResults = allResults;
+      
+      if (filters.userType !== 'all') {
+        filteredResults = filteredResults.filter(result => result.type === filters.userType);
+      }
+
+      if (searchQuery) {
+        filteredResults = filteredResults.filter(result => 
+          result.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          result.specializations.some((spec: string) => spec.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          result.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      setSearchResults(filteredResults);
+    } catch (error) {
+      console.error('Error performing search:', error);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  // Load results on component mount and when filters change
+  useEffect(() => {
+    performSearch();
+  }, [selectedSpecializations, filters.userType]);
+
+  // Handle search button click
+  const handleSearch = () => {
+    performSearch();
+  };
+
   // Function to determine if names should be visible
   const canSeeNames = () => {
     if (!user) return false;
@@ -93,52 +232,6 @@ const Search = () => {
     // Premium and Enterprise users can see full names
     return name;
   };
-
-  const mockResults = [
-    {
-      id: 1,
-      type: "operator",
-      name: "Maria Bianchi",
-      specializations: ["Assistenza Anziani", "Fisioterapia"],
-      location: "Roma Centro",
-      rating: 4.8,
-      reviews: 45,
-      experience: "5+ anni",
-      verified: true,
-      available: true,
-      price: "€25/ora",
-      description: "Fisioterapista specializzata nell'assistenza domiciliare per anziani. Esperienza pluriennale nel settore.",
-      avatar: "/placeholder-avatar.jpg"
-    },
-    {
-      id: 2,
-      type: "organization",
-      name: "AssistCare Roma",
-      specializations: ["Assistenza Domiciliare", "Supporto Medico", "Riabilitazione"],
-      location: "Roma",
-      rating: 4.6,
-      reviews: 128,
-      teamSize: 25,
-      verified: true,
-      description: "Organizzazione leader nell'assistenza domiciliare con un team di professionisti qualificati.",
-      avatar: "/placeholder-org.jpg"
-    },
-    {
-      id: 3,
-      type: "operator",
-      name: "Giuseppe Rossi",
-      specializations: ["Assistenza Disabili", "Supporto Psicologico"],
-      location: "Roma Sud",
-      rating: 4.9,
-      reviews: 32,
-      experience: "8+ anni",
-      verified: true,
-      available: false,
-      price: "€30/ora",
-      description: "Psicologo e operatore sociale specializzato nel supporto a persone con disabilità.",
-      avatar: "/placeholder-avatar.jpg"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -177,9 +270,9 @@ const Search = () => {
                   id="location-search"
                 />
               </div>
-              <Button variant="familu" size="lg" className="w-full">
+              <Button variant="familu" size="lg" className="w-full" onClick={handleSearch}>
                 <SearchIcon className="h-4 w-4 mr-2" />
-                Cerca
+                {searchLoading ? "Cercando..." : "Cerca"}
               </Button>
             </div>
           </CardContent>
@@ -265,7 +358,7 @@ const Search = () => {
           <div className="lg:col-span-3">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">
-                {mockResults.length} risultati trovati
+                {searchResults.length} risultati trovati
               </h2>
               <Select defaultValue="rating">
                 <SelectTrigger className="w-[180px]">
@@ -280,7 +373,17 @@ const Search = () => {
             </div>
 
             <div className="space-y-6">
-              {mockResults.map((result) => (
+              {searchLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p>Caricamento risultati...</p>
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Nessun risultato trovato. Prova a modificare i filtri di ricerca.</p>
+                </div>
+              ) : (
+                searchResults.map((result) => (
                 <Card key={result.id} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -404,7 +507,8 @@ const Search = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ))
+              )}
             </div>
 
             {/* Load More */}
