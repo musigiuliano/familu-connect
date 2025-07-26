@@ -358,9 +358,7 @@ const Search = () => {
                     <h3 className="text-lg font-semibold text-familu-blue">Anteprima Risultati</h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    Stai visualizzando {searchResults.length} risultati di anteprima su {totalResults} totali disponibili.
-                    {!user && " Accedi per vedere più risultati."}
-                    {user && !subscribed && " Abbonati per accedere a tutti i risultati e contattare direttamente gli operatori."}
+                    Accedi per vedere tutti i risultati.
                   </p>
                   <div className="flex flex-wrap justify-center gap-3">
                     {!user && <>
