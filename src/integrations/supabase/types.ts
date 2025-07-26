@@ -32,6 +32,240 @@ export type Database = {
         }
         Relationships: []
       }
+      families: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          family_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          postal_code: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          family_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          family_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      family_assignments: {
+        Row: {
+          assigned_date: string
+          assignment_type: string | null
+          created_at: string
+          end_date: string | null
+          family_id: string
+          id: string
+          notes: string | null
+          operator_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_date?: string
+          assignment_type?: string | null
+          created_at?: string
+          end_date?: string | null
+          family_id: string
+          id?: string
+          notes?: string | null
+          operator_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_date?: string
+          assignment_type?: string | null
+          created_at?: string
+          end_date?: string | null
+          family_id?: string
+          id?: string
+          notes?: string | null
+          operator_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_assignments_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_assignments_operator_id_fkey"
+            columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "operators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_members: {
+        Row: {
+          created_at: string
+          family_id: string
+          id: string
+          is_primary_contact: boolean | null
+          relationship: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_id: string
+          id?: string
+          is_primary_contact?: boolean | null
+          relationship?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_id?: string
+          id?: string
+          is_primary_contact?: boolean | null
+          relationship?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      operators: {
+        Row: {
+          created_at: string
+          hire_date: string | null
+          id: string
+          license_number: string | null
+          organization_id: string | null
+          qualifications: string[] | null
+          specialization: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hire_date?: string | null
+          id?: string
+          license_number?: string | null
+          organization_id?: string | null
+          qualifications?: string[] | null
+          specialization?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hire_date?: string | null
+          id?: string
+          license_number?: string | null
+          organization_id?: string | null
+          qualifications?: string[] | null
+          specialization?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operators_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          address: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          name: string
+          organization_type: string | null
+          phone: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          organization_type?: string | null
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          organization_type?: string | null
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
