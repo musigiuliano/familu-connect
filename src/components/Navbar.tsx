@@ -16,7 +16,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/src/assets/familu-logo.png" 
+              src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
               alt="FamiLu - Home, Care, Community" 
               className="h-16 w-auto"
             />
