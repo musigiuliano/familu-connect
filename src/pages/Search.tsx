@@ -351,7 +351,7 @@ const Search = () => {
             </div>
 
             {/* Preview Banner for non-premium users */}
-            {!canSeeNames() && totalResults > 0 && <Card className="mb-6 bg-gradient-to-r from-familu-blue/10 to-familu-green/10 border-familu-blue/20">
+            {!canSeeNames() && totalResults > 0 && <Card className="mb-6 bg-gradient-to-r from-familu-blue/10 to-familu-green/10 border-2 border-familu-blue/40">
                 <CardContent className="p-6 text-center">
                   <div className="flex items-center justify-center space-x-2 mb-3">
                     <Lock className="h-5 w-5 text-familu-blue" />
