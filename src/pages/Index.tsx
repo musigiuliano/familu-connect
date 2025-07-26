@@ -131,7 +131,7 @@ Operatori di Assistenza domiciliare</h1>
           <p className="text-lg text-muted-foreground mb-8">
             Unisciti alle famiglie e operatori che già usano FamiLu
           </p>
-          <Button variant="familu" size="xl" onClick={() => navigate("/register")} className="text-sky-600 text-3xl font-bold rounded">
+          <Button variant="familu" size="xl" onClick={() => navigate("/register")} className="text-sky-600 text-3xl font-bold rounded-3xl">
             Registrati Gratuitamente
           </Button>
         </div>
