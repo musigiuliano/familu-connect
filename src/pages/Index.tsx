@@ -22,7 +22,7 @@ const Index = () => {
     path: "/register"
   }, {
     title: "Organizzazioni",
-    description: "Gestisci il tuo team e servizi",
+    description: "Offri la tua organizzazione e i tuoi servizi",
     icon: Building,
     color: "primary",
     features: ["Dashboard completa", "Gestione team", "Analytics avanzate"],
