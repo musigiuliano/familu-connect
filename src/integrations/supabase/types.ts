@@ -14,24 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      FAMIGLIE: {
-        Row: {
-          created_at: string
-          Famiglia: string | null
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          Famiglia?: string | null
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          Famiglia?: string | null
-          id?: number
-        }
-        Relationships: []
-      }
       families: {
         Row: {
           address: string | null
@@ -296,6 +278,42 @@ export type Database = {
           last_name?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          stripe_customer_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
