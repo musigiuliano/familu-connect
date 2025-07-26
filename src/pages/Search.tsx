@@ -362,7 +362,7 @@ const Search = () => {
                   </p>
                   <div className="flex flex-wrap justify-center gap-3">
                     {!user && <>
-                        <Button variant="familu" onClick={() => window.location.href = "/login"} className="text-familu-green">
+                        <Button variant="familu" onClick={() => window.location.href = "/login"} className="text-familu-green border border-familu-green">
                           Accedi
                         </Button>
                         <Button variant="familu-outline" onClick={() => window.location.href = "/register"}>
