@@ -15,7 +15,7 @@ const Index = () => {
     path: "/register"
   }, {
     title: "Operatori",
-    description: "Offri i tuoi servizi a famiglie bisognose",
+    description: "Offri i tuoi servizi alle famiglie che li cercano",
     icon: Users,
     color: "familu-green",
     features: ["Profilo professionale", "Gestione appuntamenti", "Valutazioni clienti"],
