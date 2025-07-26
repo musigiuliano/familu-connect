@@ -155,6 +155,51 @@ export type Database = {
           },
         ]
       }
+      operator_specializations: {
+        Row: {
+          certification_level: string | null
+          created_at: string
+          experience_years: number | null
+          id: string
+          notes: string | null
+          operator_id: string
+          specialization_id: string
+        }
+        Insert: {
+          certification_level?: string | null
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          notes?: string | null
+          operator_id: string
+          specialization_id: string
+        }
+        Update: {
+          certification_level?: string | null
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          notes?: string | null
+          operator_id?: string
+          specialization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operator_specializations_operator_id_fkey"
+            columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "operators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operator_specializations_specialization_id_fkey"
+            columns: ["specialization_id"]
+            isOneToOne: false
+            referencedRelation: "specializations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       operators: {
         Row: {
           created_at: string
@@ -206,6 +251,51 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      organization_specializations: {
+        Row: {
+          certification_level: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          organization_id: string
+          specialization_id: string
+          team_size: number | null
+        }
+        Insert: {
+          certification_level?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organization_id: string
+          specialization_id: string
+          team_size?: number | null
+        }
+        Update: {
+          certification_level?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          specialization_id?: string
+          team_size?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_specializations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_specializations_specialization_id_fkey"
+            columns: ["specialization_id"]
+            isOneToOne: false
+            referencedRelation: "specializations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -278,6 +368,36 @@ export type Database = {
           last_name?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      specializations: {
+        Row: {
+          active: boolean
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }

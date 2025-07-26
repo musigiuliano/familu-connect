@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,18 +24,48 @@ import {
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { supabase } from "@/integrations/supabase/client";
 
 const Search = () => {
   const { user } = useAuth();
   const { subscribed, subscriptionTier } = useSubscription();
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
+  const [specializations, setSpecializations] = useState<Array<{id: string, name: string}>>([]);
+  const [selectedSpecializations, setSelectedSpecializations] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     userType: "all",
-    specializations: [],
     availability: "all",
     rating: "all"
   });
+
+  // Load specializations from database
+  useEffect(() => {
+    const loadSpecializations = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('specializations')
+          .select('id, name')
+          .eq('active', true)
+          .order('name');
+        
+        if (error) throw error;
+        setSpecializations(data || []);
+      } catch (error) {
+        console.error('Error loading specializations:', error);
+      }
+    };
+
+    loadSpecializations();
+  }, []);
+  // Handle specialization filter changes
+  const toggleSpecialization = (specId: string) => {
+    setSelectedSpecializations(prev => 
+      prev.includes(specId) 
+        ? prev.filter(id => id !== specId)
+        : [...prev, specId]
+    );
+  };
 
   // Function to determine if names should be visible
   const canSeeNames = () => {
@@ -184,10 +214,14 @@ const Search = () => {
                 <div>
                   <label className="text-sm font-medium mb-3 block">Specializzazioni</label>
                   <div className="space-y-2">
-                    {["Assistenza Anziani", "Assistenza Disabili", "Fisioterapia", "Supporto Psicologico", "Assistenza Medica"].map((spec) => (
-                      <div key={spec} className="flex items-center space-x-2">
-                        <Checkbox id={spec} />
-                        <label htmlFor={spec} className="text-sm">{spec}</label>
+                    {specializations.map((spec) => (
+                      <div key={spec.id} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={spec.id} 
+                          checked={selectedSpecializations.includes(spec.id)}
+                          onCheckedChange={() => toggleSpecialization(spec.id)}
+                        />
+                        <label htmlFor={spec.id} className="text-sm">{spec.name}</label>
                       </div>
                     ))}
                   </div>
