@@ -8,14 +8,14 @@ const Index = () => {
   const navigate = useNavigate();
   const userTypes = [{
     title: "Famiglie",
-    description: "Trova assistenza qualificata per i tuoi cari",
+    description: "Trova assistenza generica e qualificata per i tuoi cari",
     icon: Heart,
     color: "familu-blue",
-    features: ["Ricerca operatori verificati", "Sistema di recensioni", "Comunicazione diretta"],
+    features: ["Ricerca operatori preparati", "Verifica le recensioni", "Comunicazione diretta"],
     path: "/register"
   }, {
     title: "Operatori",
-    description: "Offri i tuoi servizi alle famiglie che li cercano",
+    description: "Offri i tuoi servizi alle famiglie che ti cercano",
     icon: Users,
     color: "familu-green",
     features: ["Profilo professionale", "Gestione appuntamenti", "Valutazioni clienti"],
@@ -115,7 +115,7 @@ Operatori di Assistenza domiciliare</h1>
                     <IconComponent className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title === "Sicurezza Garantita" ? "Maggiore sicurezza" : feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description === "Tutti gli operatori sono verificati e certificati" ? "Puoi verificare il profilo e ottenere conferme" : feature.description}</p>
+                  <p className="text-muted-foreground">{feature.description === "Tutti gli operatori sono verificati e certificati" ? "Puoi verificare il profilo e ottenere recensioni" : feature.description}</p>
                 </div>;
           })}
           </div>
@@ -129,7 +129,7 @@ Operatori di Assistenza domiciliare</h1>
             Pronto a Iniziare?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Unisciti a migliaia di famiglie e operatori che già usano FamiLu
+            Unisciti alle famiglie e operatori che già usano FamiLu
           </p>
           <Button variant="familu" size="xl" onClick={() => navigate("/register")} className="text-sky-600 text-3xl font-bold rounded">
             Registrati Gratuitamente
