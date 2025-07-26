@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Mail, Lock, User, Building, Phone, MapPin } from "lucide-react";
-import familiuLogo from "@/assets/familu-logo.png";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +31,7 @@ const Register = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img 
-            src={familiuLogo} 
+            src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
             alt="FamiLu" 
             className="h-16 w-auto mx-auto mb-4"
           />
