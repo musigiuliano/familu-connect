@@ -24,6 +24,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import AddressInput from "@/components/AddressInput";
 
 const OrganizationProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -244,15 +245,19 @@ const OrganizationProfile = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="address">Indirizzo</Label>
                     {isEditing ? (
-                      <Input
-                        id="address"
+                      <AddressInput
+                        label="Indirizzo"
                         value={profileData.address}
-                        onChange={(e) => setProfileData({...profileData, address: e.target.value})}
+                        onChange={(address) => setProfileData({...profileData, address: address})}
+                        placeholder="Inserisci l'indirizzo completo"
+                        id="address"
                       />
                     ) : (
-                      <p className="text-sm text-muted-foreground">{profileData.address}</p>
+                      <>
+                        <Label htmlFor="address">Indirizzo</Label>
+                        <p className="text-sm text-muted-foreground">{profileData.address}</p>
+                      </>
                     )}
                   </div>
 

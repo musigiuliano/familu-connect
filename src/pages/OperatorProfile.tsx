@@ -24,6 +24,7 @@ import {
   Clock
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import AddressInput from "@/components/AddressInput";
 
 const OperatorProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -195,6 +196,23 @@ const OperatorProfile = () => {
                         />
                       ) : (
                         <p className="text-sm text-muted-foreground">{profileData.phone}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      {isEditing ? (
+                        <AddressInput
+                          label="Località"
+                          value={profileData.location}
+                          onChange={(address) => setProfileData({...profileData, location: address})}
+                          placeholder="Inserisci l'indirizzo completo"
+                          id="location"
+                        />
+                      ) : (
+                        <>
+                          <Label htmlFor="location">Località</Label>
+                          <p className="text-sm text-muted-foreground">{profileData.location}</p>
+                        </>
                       )}
                     </div>
 

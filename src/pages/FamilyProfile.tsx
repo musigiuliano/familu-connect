@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, MapPin, Phone, Mail, Edit, Plus, X, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import AddressInput from "@/components/AddressInput";
 
 const FamilyProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -128,18 +129,22 @@ const FamilyProfile = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location">Località</Label>
                     {isEditing ? (
-                      <Input
-                        id="location"
+                      <AddressInput
+                        label="Località"
                         value={profileData.location}
-                        onChange={(e) => setProfileData({...profileData, location: e.target.value})}
+                        onChange={(address) => setProfileData({...profileData, location: address})}
+                        placeholder="Inserisci l'indirizzo completo"
+                        id="location"
                       />
                     ) : (
-                      <p className="text-sm text-muted-foreground flex items-center">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {profileData.location}
-                      </p>
+                      <>
+                        <Label htmlFor="location">Località</Label>
+                        <p className="text-sm text-muted-foreground flex items-center">
+                          <MapPin className="h-4 w-4 mr-2" />
+                          {profileData.location}
+                        </p>
+                      </>
                     )}
                   </div>
                 </div>
