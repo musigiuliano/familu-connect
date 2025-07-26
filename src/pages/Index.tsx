@@ -4,72 +4,48 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Building, Search, Star, Shield, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-
 const Index = () => {
   const navigate = useNavigate();
-
-  const userTypes = [
-    {
-      title: "Famiglie",
-      description: "Trova assistenza qualificata per i tuoi cari",
-      icon: Heart,
-      color: "familu-blue",
-      features: ["Ricerca operatori verificati", "Sistema di recensioni", "Comunicazione diretta"],
-      path: "/register"
-    },
-    {
-      title: "Operatori",
-      description: "Offri i tuoi servizi a famiglie bisognose",
-      icon: Users,
-      color: "familu-green", 
-      features: ["Profilo professionale", "Gestione appuntamenti", "Valutazioni clienti"],
-      path: "/register"
-    },
-    {
-      title: "Organizzazioni",
-      description: "Gestisci il tuo team e servizi",
-      icon: Building,
-      color: "primary",
-      features: ["Dashboard completa", "Gestione team", "Analytics avanzate"],
-      path: "/register"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const userTypes = [{
+    title: "Famiglie",
+    description: "Trova assistenza qualificata per i tuoi cari",
+    icon: Heart,
+    color: "familu-blue",
+    features: ["Ricerca operatori verificati", "Sistema di recensioni", "Comunicazione diretta"],
+    path: "/register"
+  }, {
+    title: "Operatori",
+    description: "Offri i tuoi servizi a famiglie bisognose",
+    icon: Users,
+    color: "familu-green",
+    features: ["Profilo professionale", "Gestione appuntamenti", "Valutazioni clienti"],
+    path: "/register"
+  }, {
+    title: "Organizzazioni",
+    description: "Gestisci il tuo team e servizi",
+    icon: Building,
+    color: "primary",
+    features: ["Dashboard completa", "Gestione team", "Analytics avanzate"],
+    path: "/register"
+  }];
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-[var(--gradient-primary)] text-white">
         <div className="max-w-7xl mx-auto text-center">
-          <img 
-            src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
-            alt="FamiLu - Home, Care, Community" 
-            className="h-128 w-auto mx-auto mb-8"
-          />
-          <h1 className="text-5xl font-bold mb-6">
-            Connettendo Famiglie e Operatori di Assistenza
-          </h1>
+          <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu - Home, Care, Community" className="h-128 w-auto mx-auto mb-8" />
+          <h1 className="text-5xl font-bold mb-6">Incontriamo Famiglie e Operatori di Assistenza</h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
             FamiLu è la piattaforma che mette in contatto le famiglie che necessitano di assistenza 
             domiciliare con operatori e organizzazioni qualificate.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="secondary" 
-              size="xl"
-              onClick={() => navigate("/search")}
-              className="bg-white text-primary hover:bg-white/90"
-            >
+            <Button variant="secondary" size="xl" onClick={() => navigate("/search")} className="bg-white text-primary hover:bg-white/90">
               <Search className="h-5 w-5 mr-2" />
               Trova Assistenza
             </Button>
-            <Button 
-              variant="familu-outline" 
-              size="xl"
-              onClick={() => navigate("/register")}
-              className="border-white text-white hover:bg-white hover:text-primary"
-            >
+            <Button variant="familu-outline" size="xl" onClick={() => navigate("/register")} className="border-white text-white hover:bg-white hover:text-primary">
               Registrati Gratis
             </Button>
           </div>
@@ -90,39 +66,25 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {userTypes.map((type, index) => {
-              const IconComponent = type.icon;
-              return (
-                <Card 
-                  key={index} 
-                  className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer"
-                  onClick={() => navigate(type.path)}
-                >
+            const IconComponent = type.icon;
+            return <Card key={index} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer" onClick={() => navigate(type.path)}>
                   <CardHeader className="text-center">
-                    <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-                      type.color === "familu-blue" ? "bg-familu-light-blue" :
-                      type.color === "familu-green" ? "bg-familu-light-green" : "bg-accent"
-                    }`}>
-                      <IconComponent className={`h-8 w-8 ${
-                        type.color === "familu-blue" ? "text-familu-blue" :
-                        type.color === "familu-green" ? "text-familu-green" : "text-primary"
-                      }`} />
+                    <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${type.color === "familu-blue" ? "bg-familu-light-blue" : type.color === "familu-green" ? "bg-familu-light-green" : "bg-accent"}`}>
+                      <IconComponent className={`h-8 w-8 ${type.color === "familu-blue" ? "text-familu-blue" : type.color === "familu-green" ? "text-familu-green" : "text-primary"}`} />
                     </div>
                     <CardTitle className="text-xl">{type.title}</CardTitle>
                     <CardDescription>{type.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {type.features.map((feature, i) => (
-                        <li key={i} className="flex items-center space-x-2 text-sm">
+                      {type.features.map((feature, i) => <li key={i} className="flex items-center space-x-2 text-sm">
                           <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                           <span>{feature}</span>
-                        </li>
-                      ))}
+                        </li>)}
                     </ul>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
       </section>
@@ -137,34 +99,28 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Shield,
-                title: "Sicurezza Garantita",
-                description: "Tutti gli operatori sono verificati e certificati"
-              },
-              {
-                icon: Star,
-                title: "Qualità Assicurata", 
-                description: "Sistema di recensioni e valutazioni trasparente"
-              },
-              {
-                icon: MessageCircle,
-                title: "Comunicazione Diretta",
-                description: "Chat integrata per comunicare facilmente"
-              }
-            ].map((feature, index) => {
-              const IconComponent = feature.icon;
-              return (
-                <div key={index} className="text-center">
+            {[{
+            icon: Shield,
+            title: "Sicurezza Garantita",
+            description: "Tutti gli operatori sono verificati e certificati"
+          }, {
+            icon: Star,
+            title: "Qualità Assicurata",
+            description: "Sistema di recensioni e valutazioni trasparente"
+          }, {
+            icon: MessageCircle,
+            title: "Comunicazione Diretta",
+            description: "Chat integrata per comunicare facilmente"
+          }].map((feature, index) => {
+            const IconComponent = feature.icon;
+            return <div key={index} className="text-center">
                   <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <IconComponent className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </div>
       </section>
@@ -178,17 +134,11 @@ const Index = () => {
           <p className="text-lg text-muted-foreground mb-8">
             Unisciti a migliaia di famiglie e operatori che già usano FamiLu
           </p>
-          <Button 
-            variant="familu" 
-            size="xl"
-            onClick={() => navigate("/register")}
-          >
+          <Button variant="familu" size="xl" onClick={() => navigate("/register")}>
             Registrati Gratuitamente
           </Button>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
