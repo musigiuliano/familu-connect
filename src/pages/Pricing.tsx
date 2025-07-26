@@ -156,6 +156,7 @@ const Pricing = () => {
                     </div>
                   </div>
 
+                <div className="mt-8">
                   {subscriptionTier === plan.name.toLowerCase() ? (
                     plan.name === "Friends" ? (
                       <Button variant="familu-outline" size="lg" className="w-full" disabled>
@@ -176,6 +177,7 @@ const Pricing = () => {
                       {plan.name === "Friends" ? "Inizia Gratis" : "Sottoscrivi Ora"}
                     </Button>
                   )}
+                </div>
                 </CardContent>
               </Card>;
         })}
