@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Mail, Lock, User, Building, Phone, MapPin } from "lucide-react";
+import AddressInput from "@/components/AddressInput";
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -188,16 +189,16 @@ const Register = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Località</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="location" type="text" placeholder="Roma, Italia" value={formData.location} onChange={e => setFormData({
-                      ...formData,
-                      location: e.target.value
-                    })} className="pl-10" required />
-                      </div>
-                    </div>
+                    <AddressInput
+                      label="Località"
+                      value={formData.location}
+                      onChange={(address, coordinates) => setFormData({
+                        ...formData,
+                        location: address
+                      })}
+                      placeholder="Roma, Italia"
+                      id="location"
+                    />
 
                     <div className="space-y-2">
                       <Label htmlFor="password">Password</Label>
