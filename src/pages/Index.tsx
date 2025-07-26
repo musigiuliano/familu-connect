@@ -45,7 +45,7 @@ const Index = () => {
           <img 
             src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" 
             alt="FamiLu - Home, Care, Community" 
-            className="h-64 w-auto mx-auto mb-8"
+            className="h-128 w-auto mx-auto mb-8"
           />
           <h1 className="text-5xl font-bold mb-6">
             Connettendo Famiglie e Operatori di Assistenza
