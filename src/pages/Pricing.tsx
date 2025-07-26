@@ -201,7 +201,7 @@ const Pricing = () => {
           <h2 className="text-2xl font-bold mb-4 text-sky-500">
             Pronto a Iniziare con FamiLu?
           </h2>
-          <p className="text-white/90 mb-6">
+          <p className="mb-6 text-green-500 text-base font-bold">
             Unisciti a migliaia di famiglie e operatori che già si fidano di FamiLu
           </p>
           <Button variant="secondary" size="xl" className="bg-white text-primary hover:bg-white/90">
