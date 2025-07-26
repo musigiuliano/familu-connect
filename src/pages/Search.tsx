@@ -70,6 +70,7 @@ const Search = () => {
 
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
 
   // Load search results
   const performSearch = async () => {
@@ -173,11 +174,12 @@ const Search = () => {
       })) || [];
 
       const allResults = [...formattedOperators, ...formattedOrganizations];
+      setTotalResults(allResults.length);
       
       // Apply filters
       let filteredResults = allResults;
       
-      if (filters.userType !== 'all') {
+      if (filters.userType !== "all") {
         filteredResults = filteredResults.filter(result => result.type === filters.userType);
       }
 
@@ -189,7 +191,9 @@ const Search = () => {
         );
       }
 
-      setSearchResults(filteredResults);
+      // Always show at least 3 results as preview (or all if less than 3)
+      const previewResults = filteredResults.slice(0, 3);
+      setSearchResults(previewResults);
     } catch (error) {
       console.error('Error performing search:', error);
     } finally {
@@ -358,7 +362,7 @@ const Search = () => {
           <div className="lg:col-span-3">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">
-                {searchResults.length} risultati trovati
+                {searchResults.length} risultati mostrati {totalResults > 3 && !canSeeNames() ? `di ${totalResults} totali` : ""}
               </h2>
               <Select defaultValue="rating">
                 <SelectTrigger className="w-[180px]">
@@ -372,6 +376,40 @@ const Search = () => {
               </Select>
             </div>
 
+            {/* Preview Banner for non-premium users */}
+            {!canSeeNames() && totalResults > 0 && (
+              <Card className="mb-6 bg-gradient-to-r from-familu-blue/10 to-familu-green/10 border-familu-blue/20">
+                <CardContent className="p-6 text-center">
+                  <div className="flex items-center justify-center space-x-2 mb-3">
+                    <Lock className="h-5 w-5 text-familu-blue" />
+                    <h3 className="text-lg font-semibold text-familu-blue">Anteprima Risultati</h3>
+                  </div>
+                  <p className="text-muted-foreground mb-4">
+                    Stai visualizzando {searchResults.length} risultati di anteprima su {totalResults} totali disponibili.
+                    {!user && " Accedi per vedere più risultati."}
+                    {user && !subscribed && " Abbonati per accedere a tutti i risultati e contattare direttamente gli operatori."}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    {!user && (
+                      <>
+                        <Button variant="familu" onClick={() => window.location.href = "/login"}>
+                          Accedi
+                        </Button>
+                        <Button variant="familu-outline" onClick={() => window.location.href = "/register"}>
+                          Registrati
+                        </Button>
+                      </>
+                    )}
+                    {user && !subscribed && (
+                      <Button variant="familu" onClick={() => window.location.href = "/pricing"}>
+                        Scopri i Piani Premium
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="space-y-6">
               {searchLoading ? (
                 <div className="text-center py-8">
@@ -383,7 +421,7 @@ const Search = () => {
                   <p className="text-muted-foreground">Nessun risultato trovato. Prova a modificare i filtri di ricerca.</p>
                 </div>
               ) : (
-                searchResults.map((result) => (
+                searchResults.map((result, index) => (
                 <Card key={result.id} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -413,7 +451,7 @@ const Search = () => {
                                 <div className="flex items-center space-x-1">
                                   <Lock className="h-4 w-4 text-muted-foreground" />
                                   <Badge variant="outline" className="text-xs">
-                                    Accesso Premium
+                                    Anteprima
                                   </Badge>
                                 </div>
                               )}
@@ -495,10 +533,14 @@ const Search = () => {
                             <>
                               <Button variant="outline" size="sm" disabled>
                                 <Lock className="h-4 w-4 mr-2" />
-                                Accedi per Contattare
+                                {!user ? "Accedi per Contattare" : "Premium per Contattare"}
                               </Button>
-                              <Button variant="familu" size="sm" onClick={() => window.location.href = '/pricing'}>
-                                Ottieni Accesso Premium
+                              <Button 
+                                variant="familu" 
+                                size="sm" 
+                                onClick={() => window.location.href = !user ? "/login" : "/pricing"}
+                              >
+                                {!user ? "Accedi" : "Ottieni Accesso Premium"}
                               </Button>
                             </>
                           )}
@@ -508,15 +550,40 @@ const Search = () => {
                   </CardContent>
                 </Card>
               ))
-              )}
+            )}
             </div>
 
-            {/* Load More */}
-            <div className="text-center mt-8">
-              <Button variant="outline" size="lg">
-                Carica Altri Risultati
-              </Button>
-            </div>
+            {/* Load More Button - only show for premium users with more results */}
+            {canSeeNames() && totalResults > searchResults.length && (
+              <div className="text-center mt-8">
+                <Button variant="outline" size="lg">
+                  Carica Altri Risultati ({totalResults - searchResults.length} rimanenti)
+                </Button>
+              </div>
+            )}
+
+            {/* Upgrade prompt for more results */}
+            {!canSeeNames() && totalResults > 3 && (
+              <div className="text-center mt-8">
+                <Card className="bg-gradient-to-r from-familu-blue/5 to-familu-green/5">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-2">Altri {totalResults - 3} risultati disponibili</h3>
+                    <p className="text-muted-foreground mb-4">
+                      {!user 
+                        ? "Accedi per vedere tutti i risultati e contattare direttamente gli operatori."
+                        : "Abbonati per accedere a tutti i risultati e alle funzionalità complete."
+                      }
+                    </p>
+                    <Button 
+                      variant="familu" 
+                      onClick={() => window.location.href = !user ? "/login" : "/pricing"}
+                    >
+                      {!user ? "Accedi Ora" : "Scopri i Piani Premium"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         </div>
       </div>
