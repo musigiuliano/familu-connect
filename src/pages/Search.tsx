@@ -69,11 +69,6 @@ const Search = () => {
           license_number,
           status,
           created_at,
-          profiles!inner(
-            first_name,
-            last_name,
-            display_name
-          ),
           operator_specializations(
             id,
             experience_years,
@@ -89,11 +84,22 @@ const Search = () => {
       if (selectedSpecializations.length > 0) {
         operatorQuery = operatorQuery.in('operator_specializations.specialization_id', selectedSpecializations);
       }
-      const {
-        data: operators,
-        error: operatorError
-      } = await operatorQuery;
+      
+      const { data: operators, error: operatorError } = await operatorQuery;
       if (operatorError) throw operatorError;
+
+      // Get profile data for operators
+      const operatorUserIds = operators?.map(op => op.user_id).filter(Boolean) || [];
+      const { data: operatorProfiles } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name, display_name')
+        .in('user_id', operatorUserIds);
+
+      // Combine operator data with profiles
+      const operatorsWithProfiles = operators?.map(op => ({
+        ...op,
+        profile: operatorProfiles?.find(p => p.user_id === op.user_id)
+      })) || [];
 
       // Query organizations
       let organizationQuery = supabase.from('organizations').select(`
@@ -126,11 +132,11 @@ const Search = () => {
       } = await organizationQuery;
       if (orgError) throw orgError;
 
-      // Format results
-      const formattedOperators = operators?.map(op => ({
+      // Format results - use operatorsWithProfiles instead of operators
+      const formattedOperators = operatorsWithProfiles?.map(op => ({
         id: op.id,
         type: 'operator' as const,
-        name: `${op.profiles?.first_name || ''} ${op.profiles?.last_name || ''}`.trim() || 'Operatore',
+        name: `${op.profile?.first_name || ''} ${op.profile?.last_name || ''}`.trim() || 'Operatore',
         specializations: op.operator_specializations?.map((os: any) => os.specializations?.name).filter(Boolean) || [],
         location: "Italia",
         // TODO: add location data
