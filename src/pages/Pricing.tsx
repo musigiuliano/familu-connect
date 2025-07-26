@@ -3,7 +3,76 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Check, Heart, Users, Crown, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 const Pricing = () => {
+  const { user } = useAuth();
+  const { subscribed, subscriptionTier, createCheckout, openCustomerPortal, checkSubscription } = useSubscription();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Check for success/cancel parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      toast({
+        title: "Subscription activated!",
+        description: "Welcome to your new plan. It may take a few moments to update.",
+      });
+      checkSubscription();
+    } else if (urlParams.get('canceled') === 'true') {
+      toast({
+        title: "Subscription canceled",
+        description: "No charges were made. You can try again anytime.",
+        variant: "destructive",
+      });
+    }
+  }, [toast, checkSubscription]);
+
+  const handleSubscribe = async (plan: string) => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please log in to subscribe to a plan.",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return;
+    }
+
+    if (plan === 'friends') {
+      toast({
+        title: "Already on Friends plan",
+        description: "You're already on the free Friends plan!",
+      });
+      return;
+    }
+
+    try {
+      await createCheckout(plan);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create checkout session. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      await openCustomerPortal();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to open customer portal. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
   const plans = [{
     name: "Friends",
     price: "Gratuito",
@@ -87,9 +156,26 @@ const Pricing = () => {
                     </div>
                   </div>
 
-                  <Button variant={plan.popular ? "familu" : "familu-outline"} size="lg" className="w-full">
-                    {plan.name === "Friends" ? "Inizia Gratis" : "Inizia Prova Gratuita"}
-                  </Button>
+                  {subscriptionTier === plan.name.toLowerCase() ? (
+                    plan.name === "Friends" ? (
+                      <Button variant="familu-outline" size="lg" className="w-full" disabled>
+                        Piano Attuale
+                      </Button>
+                    ) : (
+                      <Button variant="familu" size="lg" className="w-full" onClick={handleManageSubscription}>
+                        Gestisci Abbonamento
+                      </Button>
+                    )
+                  ) : (
+                    <Button 
+                      variant={plan.popular ? "familu" : "familu-outline"} 
+                      size="lg" 
+                      className="w-full"
+                      onClick={() => handleSubscribe(plan.name.toLowerCase())}
+                    >
+                      {plan.name === "Friends" ? "Inizia Gratis" : "Inizia Prova Gratuita"}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>;
         })}
