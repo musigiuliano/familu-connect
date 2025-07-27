@@ -56,7 +56,7 @@ const Index = () => {
       <section className="px-4 sm:px-6 lg:px-8 py-[39px]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4 text-sky-600">Una Piattaforma, bisogni e soluzioni che si incontrano</h2>
+            <h2 className="text-3xl font-bold mb-4 text-sky-600">Una Piattaforma dove bisogni e soluzioni si incontrano</h2>
             <p className="text-lg text-muted-foreground">Seleziona il tuo ruolo e inizia subito</p>
           </div>
           
