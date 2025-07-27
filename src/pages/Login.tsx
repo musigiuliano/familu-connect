@@ -159,7 +159,7 @@ const Login = () => {
               <p className="text-sm text-muted-foreground">
                 Non hai un account?{" "}
                 <Link 
-                  to="/register" 
+                  to="/pricing" 
                   className="text-primary hover:text-primary-hover transition-colors font-medium"
                 >
                   Registrati qui
