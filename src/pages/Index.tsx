@@ -133,7 +133,7 @@ const Index = () => {
           <p className="text-lg text-muted-foreground mb-8">
             Unisciti alle famiglie e operatori che già usano FamiLu
           </p>
-          <Button variant="familu" size="xl" onClick={() => navigate("/pricing-selection")} className="text-white text-3xl font-bold rounded-3xl">
+          <Button variant="familu" size="xl" onClick={() => navigate("/pricing-selection")} className="text-3xl font-bold rounded-3xl text-sky-600">
             Registrati Gratuitamente
           </Button>
         </div>
