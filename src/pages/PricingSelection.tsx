@@ -79,7 +79,7 @@ const PricingSelection = () => {
           <h2 className="text-2xl font-bold mb-4 text-cyan-600">
             Non Sai Quale Categoria Scegliere?
           </h2>
-          <p className="mb-6 text-primary-foreground/80 text-base">
+          <p className="mb-6 text-familu-green text-base">
             Contattaci per una consulenza gratuita e ti aiuteremo a trovare la soluzione migliore
           </p>
           <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-white/90">
