@@ -70,7 +70,7 @@ const FamilyDashboard = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Dashboard Famiglia - {familyData.name}
+              Dashboard - {familyData.name}
             </h1>
             <p className="text-muted-foreground">
               Gestisci le richieste di assistenza e trova operatori qualificati • Piano: <Badge variant="secondary">{familyData.subscriptionTier}</Badge>
