@@ -159,7 +159,7 @@ const PricingOperators = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {plans.map(plan => {
             const IconComponent = plan.icon;
             return (
