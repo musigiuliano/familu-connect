@@ -81,7 +81,7 @@ const PricingSelection = () => {
                       navigate(type.route);
                     }}
                   >
-                    Vedi Prezzi
+                    Scopri Dettagli
                   </Button>
                 </CardContent>
               </Card>
