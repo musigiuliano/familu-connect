@@ -63,7 +63,10 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {userTypes.map((type, index) => {
             const IconComponent = type.icon;
-            return <Card key={index} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer" onClick={() => navigate(type.path)}>
+            return <Card key={index} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer" onClick={() => {
+              navigate(type.path);
+              window.scrollTo(0, 0);
+            }}>
                   <CardHeader className="text-center">
                     <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${type.color === "familu-blue" ? "bg-familu-light-blue" : type.color === "familu-green" ? "bg-familu-light-green" : "bg-accent"}`}>
                       <IconComponent className={`h-8 w-8 ${type.color === "familu-blue" ? "text-familu-blue" : type.color === "familu-green" ? "text-familu-green" : "text-primary"}`} />
