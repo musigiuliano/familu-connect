@@ -167,8 +167,13 @@ const Pricing = () => {
                         Piano Attuale
                       </Button> : <Button variant="familu" size="lg" className="w-full" onClick={handleManageSubscription}>
                         Gestisci Abbonamento
-                      </Button> : <Button variant={plan.popular ? "familu" : "familu-outline"} size="lg" onClick={() => handleSubscribe(plan.name.toLowerCase())} className="w-full text-green-500">
-                      {plan.name === "Friends" ? "Inizia Gratis" : "Sottoscrivi Ora"}
+                      </Button> : <Button 
+                      variant={plan.popular ? "familu" : "familu-outline"} 
+                      size="lg" 
+                      onClick={() => handleSubscribe(plan.name.toLowerCase())} 
+                      className={`w-full ${plan.name === "Network" ? "text-familu-blue" : plan.name === "Alliance" ? "border-familu-green text-familu-green" : ""}`}
+                    >
+                      {plan.name === "Friends" ? "Iscriviti Ora" : "Sottoscrivi Ora"}
                     </Button>}
                 </div>
                 </CardContent>
