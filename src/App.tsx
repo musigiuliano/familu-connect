@@ -15,7 +15,10 @@ import FamilyProfile from "./pages/FamilyProfile";
 import OperatorProfile from "./pages/OperatorProfile";
 import OrganizationProfile from "./pages/OrganizationProfile";
 import Search from "./pages/Search";
-import Pricing from "./pages/Pricing";
+import Pricing from "./pages/PricingSelection";
+import PricingFamilies from "./pages/PricingFamilies";
+import PricingOperators from "./pages/PricingOperators";
+import PricingOrganizations from "./pages/PricingOrganizations";
 import Resources from "./pages/Resources";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import OperatorDashboard from "./pages/OperatorDashboard";
@@ -45,7 +48,10 @@ const App = () => (
           <Route path="/profile/operator" element={<ProtectedRoute><OperatorProfile /></ProtectedRoute>} />
           <Route path="/profile/organization" element={<ProtectedRoute><OrganizationProfile /></ProtectedRoute>} />
           <Route path="/search" element={<Search />} />
-          <Route path="/pricing" element={<Pricing />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/pricing-families" element={<PricingFamilies />} />
+            <Route path="/pricing-operators" element={<PricingOperators />} />
+            <Route path="/pricing-organizations" element={<PricingOrganizations />} />
           <Route path="/resources" element={<Resources />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
