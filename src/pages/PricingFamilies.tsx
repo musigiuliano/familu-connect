@@ -43,12 +43,7 @@ const Pricing = () => {
   }, [toast, checkSubscription]);
   const handleSubscribe = async (plan: string) => {
     if (!user) {
-      toast({
-        title: "Login required",
-        description: "Please log in to subscribe to a plan.",
-        variant: "destructive"
-      });
-      navigate('/login');
+      navigate('/register');
       return;
     }
     if (plan === 'friends') {
