@@ -101,12 +101,12 @@ const Index = () => {
             description: "Tutti gli operatori sono verificati e certificati"
           }, {
             icon: Star,
-            title: "Qualità Assicurata",
-            description: "Sistema di recensioni e valutazioni trasparente"
+            title: "Qualità ed empatia più sicura",
+            description: "Col sistema delle recensioni e valutazioni trasparenti sei più sicuro affidando i tuoi cari"
           }, {
             icon: MessageCircle,
             title: "Comunicazione Diretta",
-            description: "Chat integrata per comunicare facilmente"
+            description: "Con la Chat integrata puoi comunicare facilmente ed in sicurezza con gli operatori"
           }].map((feature, index) => {
             const IconComponent = feature.icon;
             return <div key={index} className="text-center">
