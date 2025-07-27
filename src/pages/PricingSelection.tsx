@@ -3,39 +3,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, UserCheck, Building2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
-
 const PricingSelection = () => {
   const navigate = useNavigate();
-
-  const userTypes = [
-    {
-      title: "Famiglia",
-      description: "Cerco assistenza per la mia famiglia e i miei cari",
-      icon: Users,
-      color: "familu-blue",
-      bgColor: "familu-light-blue",
-      route: "/pricing-families"
-    },
-    {
-      title: "Operatore",
-      description: "Offro servizi di assistenza professionale",
-      icon: UserCheck,
-      color: "familu-green",
-      bgColor: "familu-light-green",
-      route: "/pricing-operators"
-    },
-    {
-      title: "Organizzazione",
-      description: "Gestisco un'organizzazione che offre servizi assistenziali",
-      icon: Building2,
-      color: "accent-foreground",
-      bgColor: "accent",
-      route: "/pricing-organizations"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const userTypes = [{
+    title: "Famiglia",
+    description: "Cerco assistenza per la mia famiglia e i miei cari",
+    icon: Users,
+    color: "familu-blue",
+    bgColor: "familu-light-blue",
+    route: "/pricing-families"
+  }, {
+    title: "Operatore",
+    description: "Offro servizi di assistenza professionale",
+    icon: UserCheck,
+    color: "familu-green",
+    bgColor: "familu-light-green",
+    route: "/pricing-operators"
+  }, {
+    title: "Organizzazione",
+    description: "Gestisco un'organizzazione che offre servizi assistenziali",
+    icon: Building2,
+    color: "accent-foreground",
+    bgColor: "accent",
+    route: "/pricing-organizations"
+  }];
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -52,17 +44,12 @@ const PricingSelection = () => {
 
         {/* User Type Selection Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {userTypes.map((type) => {
-            const IconComponent = type.icon;
-            return (
-              <Card 
-                key={type.title} 
-                className="relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer group hover:scale-105"
-                onClick={() => {
-                  navigate(type.route);
-                  window.scrollTo(0, 0);
-                }}
-              >
+          {userTypes.map(type => {
+          const IconComponent = type.icon;
+          return <Card key={type.title} className="relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer group hover:scale-105" onClick={() => {
+            navigate(type.route);
+            window.scrollTo(0, 0);
+          }}>
                 <CardHeader className="text-center pb-8">
                   <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-${type.bgColor} group-hover:scale-110 transition-transform`}>
                     <IconComponent className={`h-10 w-10 text-${type.color}`} />
@@ -75,27 +62,21 @@ const PricingSelection = () => {
                 </CardHeader>
 
                 <CardContent>
-                  <Button 
-                    variant="familu-outline" 
-                    size="lg" 
-                    className="w-full group-hover:bg-familu-blue group-hover:text-white transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(type.route);
-                      window.scrollTo(0, 0);
-                    }}
-                  >
+                  <Button variant="familu-outline" size="lg" className="w-full group-hover:bg-familu-blue group-hover:text-white transition-colors" onClick={e => {
+                e.stopPropagation();
+                navigate(type.route);
+                window.scrollTo(0, 0);
+              }}>
                     Scopri Dettagli
                   </Button>
                 </CardContent>
-              </Card>
-            );
-          })}
+              </Card>;
+        })}
         </div>
 
         {/* Additional Info Section */}
         <div className="text-center mt-16 p-8 bg-[var(--gradient-primary)] rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-primary-foreground">
+          <h2 className="text-2xl font-bold mb-4 text-cyan-600">
             Non Sai Quale Categoria Scegliere?
           </h2>
           <p className="mb-6 text-primary-foreground/80 text-base">
@@ -106,8 +87,6 @@ const PricingSelection = () => {
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default PricingSelection;
