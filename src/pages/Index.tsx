@@ -114,7 +114,7 @@ const Index = () => {
                     <IconComponent className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title === "Sicurezza Garantita" ? "Maggiore sicurezza" : feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description === "Tutti gli operatori sono verificati e certificati" ? "Puoi verificare il profilo e ottenere recensioni" : feature.description}</p>
+                  <p className="text-muted-foreground">{feature.description === "Tutti gli operatori sono verificati e certificati" ? "Puoi verificare i profili degli operatori e ottenere recensioni e testimonianze di altre famiglie" : feature.description}</p>
                 </div>;
           })}
           </div>
