@@ -227,7 +227,7 @@ const PricingOrganizations = () => {
                         size="lg" 
                         onClick={() => handleSubscribe(plan.name.toLowerCase())} 
                         className={`w-full ${
-                          plan.name === "Business" ? "text-familu-blue" : 
+                          plan.name === "Business" ? "border-2 border-familu-blue text-familu-blue" : 
                           plan.name === "Enterprise" ? "border-2 border-familu-green text-familu-green hover:bg-familu-green hover:text-white" : ""
                         }`}
                       >
