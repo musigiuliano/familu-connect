@@ -365,7 +365,7 @@ const Search = () => {
                         <Button variant="familu" onClick={() => window.location.href = "/login"} className="text-familu-green border border-familu-green">
                           Accedi
                         </Button>
-                        <Button variant="familu-outline" onClick={() => window.location.href = "/register"}>
+                        <Button variant="familu-outline" onClick={() => window.location.href = "/pricing"}>
                           Registrati
                         </Button>
                       </>}
