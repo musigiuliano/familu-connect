@@ -76,7 +76,7 @@ const PricingSelection = () => {
 
         {/* Additional Info Section */}
         <div className="text-center mt-16 p-8 bg-[var(--gradient-primary)] rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-cyan-600">
+          <h2 className="text-2xl font-bold mb-4 text-familu-blue">
             Non Sai Quale Categoria Scegliere?
           </h2>
           <p className="mb-6 text-familu-green text-base">
