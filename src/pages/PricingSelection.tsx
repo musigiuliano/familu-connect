@@ -58,7 +58,10 @@ const PricingSelection = () => {
               <Card 
                 key={type.title} 
                 className="relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer group hover:scale-105"
-                onClick={() => navigate(type.route)}
+                onClick={() => {
+                  navigate(type.route);
+                  window.scrollTo(0, 0);
+                }}
               >
                 <CardHeader className="text-center pb-8">
                   <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-${type.bgColor} group-hover:scale-110 transition-transform`}>
@@ -79,6 +82,7 @@ const PricingSelection = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(type.route);
+                      window.scrollTo(0, 0);
                     }}
                   >
                     Scopri Dettagli
