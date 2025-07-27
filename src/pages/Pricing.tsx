@@ -92,7 +92,7 @@ const Pricing = () => {
     limitations: ["Nessuna priorità nelle ricerche", "Nessun accesso a filtri avanzati", "Nessuna verifica profilo"]
   }, {
     name: "Network",
-    price: "€19.99",
+    price: "€29,90",
     period: "/mese",
     description: "La scelta ideale per famiglie attive",
     icon: Users,
@@ -101,7 +101,7 @@ const Pricing = () => {
     limitations: []
   }, {
     name: "Alliance",
-    price: "€49.99",
+    price: "€59,90",
     period: "/mese",
     description: "Massima priorità e funzionalità premium",
     icon: Crown,
