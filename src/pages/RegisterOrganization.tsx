@@ -1,16 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Building2, Mail, Lock, User, Phone } from "lucide-react";
+import { Building2, Mail, Lock, User, Phone, Users, Crown } from "lucide-react";
 import AddressInput from "@/components/AddressInput";
 
 const RegisterOrganization = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +25,17 @@ const RegisterOrganization = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createCheckout } = useSubscription();
+  
+  const plan = searchParams.get('plan') || 'starter';
+  
+  const planInfo = {
+    starter: { name: "Starter", price: "Gratuito", icon: Building2, color: "primary" },
+    business: { name: "Business", price: "€99,90/mese", icon: Users, color: "familu-blue" },
+    enterprise: { name: "Enterprise", price: "€199,90/mese", icon: Crown, color: "accent" }
+  };
+  
+  const currentPlan = planInfo[plan as keyof typeof planInfo] || planInfo.starter;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,11 +98,24 @@ const RegisterOrganization = () => {
           console.error('Error creating organization profile:', error);
         }
         
-        toast({
-          title: "Registrazione completata",
-          description: "Account organizzazione creato con successo! Verifica la tua email per attivare l'account.",
-        });
-        navigate("/login");
+        if (plan === 'starter') {
+          toast({
+            title: "Registrazione completata",
+            description: "Account organizzazione creato con successo! Benvenuto nel piano Starter gratuito.",
+          });
+          navigate("/organization-dashboard");
+        } else {
+          // Per piani a pagamento, procedi con Stripe checkout
+          try {
+            await createCheckout(plan);
+          } catch (error) {
+            toast({
+              title: "Errore",
+              description: "Si è verificato un errore durante il pagamento. Contatta il supporto.",
+              variant: "destructive"
+            });
+          }
+        }
       }
     } catch (error) {
       toast({
@@ -109,6 +135,21 @@ const RegisterOrganization = () => {
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu" className="h-16 w-auto mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-familu-blue mb-2">Benvenuto su FamiLu</h1>
           <p className="text-familu-green">Crea il tuo account organizzazione</p>
+          
+          {/* Piano selezionato */}
+          <div className="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center justify-center space-x-3">
+              {React.createElement(currentPlan.icon, { className: `h-6 w-6 text-primary` })}
+              <div>
+                <h3 className="text-lg font-semibold text-familu-blue">
+                  Abbonamento {currentPlan.name}
+                </h3>
+                <p className="text-sm text-familu-green">
+                  {plan === 'starter' ? 'Gratuito' : currentPlan.price}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">
@@ -118,7 +159,10 @@ const RegisterOrganization = () => {
             </div>
             <CardTitle className="text-2xl">Account Organizzazione</CardTitle>
             <CardDescription>
-              Registrati per gestire i tuoi operatori e servizi
+              {plan === 'starter' 
+                ? "Registrati gratuitamente per iniziare come organizzazione su FamiLu"
+                : `Completa la registrazione per attivare il piano ${currentPlan.name}`
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -236,7 +280,12 @@ const RegisterOrganization = () => {
                 disabled={!formData.termsAccepted || loading} 
                 className="w-full text-sky-600 font-bold"
               >
-                {loading ? "Registrazione in corso..." : "Registrati come Organizzazione"}
+                {loading 
+                  ? "Registrazione in corso..." 
+                  : plan === 'starter' 
+                    ? "Registrati Gratuitamente" 
+                    : `Registrati e Attiva ${currentPlan.name}`
+                }
               </Button>
             </form>
 

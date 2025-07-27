@@ -1,16 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { UserCheck, Mail, Lock, User, Phone } from "lucide-react";
+import { UserCheck, Mail, Lock, User, Phone, Users, Star } from "lucide-react";
 import AddressInput from "@/components/AddressInput";
 
 const RegisterOperator = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +25,17 @@ const RegisterOperator = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createCheckout } = useSubscription();
+  
+  const plan = searchParams.get('plan') || 'basic';
+  
+  const planInfo = {
+    basic: { name: "Basic", price: "Gratuito", icon: UserCheck, color: "familu-green" },
+    professional: { name: "Professional", price: "€39,90/mese", icon: Users, color: "familu-blue" },
+    expert: { name: "Expert", price: "€69,90/mese", icon: Star, color: "accent" }
+  };
+  
+  const currentPlan = planInfo[plan as keyof typeof planInfo] || planInfo.basic;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,11 +95,24 @@ const RegisterOperator = () => {
           console.error('Error creating operator profile:', error);
         }
         
-        toast({
-          title: "Registrazione completata",
-          description: "Account operatore creato con successo! Verifica la tua email per attivare l'account.",
-        });
-        navigate("/login");
+        if (plan === 'basic') {
+          toast({
+            title: "Registrazione completata",
+            description: "Account operatore creato con successo! Benvenuto nel piano Basic gratuito.",
+          });
+          navigate("/operator-dashboard");
+        } else {
+          // Per piani a pagamento, procedi con Stripe checkout
+          try {
+            await createCheckout(plan);
+          } catch (error) {
+            toast({
+              title: "Errore",
+              description: "Si è verificato un errore durante il pagamento. Contatta il supporto.",
+              variant: "destructive"
+            });
+          }
+        }
       }
     } catch (error) {
       toast({
@@ -106,6 +132,21 @@ const RegisterOperator = () => {
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu" className="h-16 w-auto mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-familu-blue mb-2">Benvenuto su FamiLu</h1>
           <p className="text-familu-green">Crea il tuo account operatore</p>
+          
+          {/* Piano selezionato */}
+          <div className="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center justify-center space-x-3">
+              {React.createElement(currentPlan.icon, { className: `h-6 w-6 text-familu-green` })}
+              <div>
+                <h3 className="text-lg font-semibold text-familu-blue">
+                  Abbonamento {currentPlan.name}
+                </h3>
+                <p className="text-sm text-familu-green">
+                  {plan === 'basic' ? 'Gratuito' : currentPlan.price}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">
@@ -115,7 +156,10 @@ const RegisterOperator = () => {
             </div>
             <CardTitle className="text-2xl">Account Operatore</CardTitle>
             <CardDescription>
-              Registrati per offrire i tuoi servizi alle famiglie
+              {plan === 'basic' 
+                ? "Registrati gratuitamente per iniziare come operatore su FamiLu"
+                : `Completa la registrazione per attivare il piano ${currentPlan.name}`
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -233,7 +277,12 @@ const RegisterOperator = () => {
                 disabled={!formData.termsAccepted || loading} 
                 className="w-full text-sky-600 font-bold"
               >
-                {loading ? "Registrazione in corso..." : "Registrati come Operatore"}
+                {loading 
+                  ? "Registrazione in corso..." 
+                  : plan === 'basic' 
+                    ? "Registrati Gratuitamente" 
+                    : `Registrati e Attiva ${currentPlan.name}`
+                }
               </Button>
             </form>
 
