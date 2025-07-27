@@ -168,7 +168,7 @@ const PricingOrganizations = () => {
                           Piano Attuale
                         </Button> : <Button variant="familu" size="lg" className="w-full" onClick={handleManageSubscription}>
                           Gestisci Abbonamento
-                        </Button> : <Button variant={plan.popular ? "familu" : "familu-outline"} size="lg" onClick={() => handleSubscribe(plan.name.toLowerCase())} className={`w-full ${plan.name === "Business" ? "text-familu-blue" : plan.name === "Enterprise" ? "border-2 border-familu-green text-familu-green hover:bg-familu-green hover:text-white" : ""}`}>
+                        </Button> : <Button variant={plan.popular ? "familu" : "familu-outline"} size="lg" onClick={() => handleSubscribe(plan.name.toLowerCase())} className={`w-full ${plan.name === "Business" ? "border-2 border-familu-blue text-familu-blue hover:bg-familu-blue hover:text-white" : plan.name === "Enterprise" ? "border-2 border-familu-green text-familu-green hover:bg-familu-green hover:text-white" : ""}`}>
                         {plan.name === "Starter" ? "Iscriviti Ora" : "Sottoscrivi Ora"}
                       </Button>}
                   </div>
