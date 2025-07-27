@@ -227,7 +227,7 @@ const PricingOperators = () => {
                         size="lg" 
                         onClick={() => handleSubscribe(plan.name.toLowerCase())} 
                         className={`w-full ${
-                          plan.name === "Professional" ? "text-familu-blue" : 
+                          plan.name === "Professional" ? "border-2 border-familu-blue text-familu-blue" : 
                           plan.name === "Expert" ? "border-2 border-familu-green text-familu-green hover:bg-familu-green hover:text-white" : ""
                         }`}
                       >
