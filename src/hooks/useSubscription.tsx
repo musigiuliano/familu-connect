@@ -17,14 +17,14 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(u
 export const SubscriptionProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, session } = useAuth();
   const [subscribed, setSubscribed] = useState(false);
-  const [subscriptionTier, setSubscriptionTier] = useState('friends');
+  const [subscriptionTier, setSubscriptionTier] = useState('');
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const checkSubscription = async () => {
     if (!user || !session) {
       setSubscribed(false);
-      setSubscriptionTier('friends');
+      setSubscriptionTier('');
       setSubscriptionEnd(null);
       return;
     }
@@ -45,7 +45,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
     } catch (error) {
       console.error('Error checking subscription:', error);
       setSubscribed(false);
-      setSubscriptionTier('friends');
+      setSubscriptionTier('');
       setSubscriptionEnd(null);
     } finally {
       setLoading(false);
