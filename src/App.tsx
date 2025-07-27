@@ -9,6 +9,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RegisterFamily from "./pages/RegisterFamily";
+import RegisterOperator from "./pages/RegisterOperator";
+import RegisterOrganization from "./pages/RegisterOrganization";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import FamilyProfile from "./pages/FamilyProfile";
@@ -39,6 +42,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/register-family" element={<RegisterFamily />} />
+          <Route path="/register-operator" element={<RegisterOperator />} />
+          <Route path="/register-organization" element={<RegisterOrganization />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard-family" element={<ProtectedRoute><FamilyDashboard /></ProtectedRoute>} />
