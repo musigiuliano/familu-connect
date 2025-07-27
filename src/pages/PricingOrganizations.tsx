@@ -43,7 +43,7 @@ const PricingOrganizations = () => {
   }, [toast, checkSubscription]);
   const handleSubscribe = async (plan: string) => {
     if (!user) {
-      navigate('/register-organization');
+      navigate(`/register-organization?plan=${plan}`);
       return;
     }
     if (plan === 'starter') {

@@ -41,7 +41,7 @@ const PricingOperators = () => {
 
   const handleSubscribe = async (plan: string) => {
     if (!user) {
-      navigate('/register-operator');
+      navigate(`/register-operator?plan=${plan}`);
       return;
     }
 

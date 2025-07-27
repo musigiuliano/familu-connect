@@ -43,7 +43,7 @@ const Pricing = () => {
   }, [toast, checkSubscription]);
   const handleSubscribe = async (plan: string) => {
     if (!user) {
-      navigate('/register-family');
+      navigate(`/register-family?plan=${plan}`);
       return;
     }
     if (plan === 'friends') {

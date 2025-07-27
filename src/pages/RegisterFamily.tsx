@@ -1,16 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Mail, Lock, User, Phone } from "lucide-react";
+import { Heart, Mail, Lock, User, Phone, Crown, Users } from "lucide-react";
 import AddressInput from "@/components/AddressInput";
 
 const RegisterFamily = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +25,17 @@ const RegisterFamily = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createCheckout } = useSubscription();
+  
+  const plan = searchParams.get('plan') || 'friends';
+  
+  const planInfo = {
+    friends: { name: "Friends", price: "Gratuito", icon: Heart, color: "familu-blue" },
+    network: { name: "Network", price: "€29,90/mese", icon: Users, color: "familu-green" },
+    alliance: { name: "Alliance", price: "€59,90/mese", icon: Crown, color: "accent" }
+  };
+  
+  const currentPlan = planInfo[plan as keyof typeof planInfo] || planInfo.friends;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,11 +98,24 @@ const RegisterFamily = () => {
           console.error('Error creating family profile:', error);
         }
         
-        toast({
-          title: "Registrazione completata",
-          description: "Account famiglia creato con successo! Verifica la tua email per attivare l'account.",
-        });
-        navigate("/login");
+        if (plan === 'friends') {
+          toast({
+            title: "Registrazione completata",
+            description: "Account famiglia creato con successo! Benvenuto nel piano Friends gratuito.",
+          });
+          navigate("/family-dashboard");
+        } else {
+          // Per piani a pagamento, procedi con Stripe checkout
+          try {
+            await createCheckout(plan);
+          } catch (error) {
+            toast({
+              title: "Errore",
+              description: "Si è verificato un errore durante il pagamento. Contatta il supporto.",
+              variant: "destructive"
+            });
+          }
+        }
       }
     } catch (error) {
       toast({
@@ -109,6 +135,21 @@ const RegisterFamily = () => {
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu" className="h-16 w-auto mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-familu-blue mb-2">Benvenuto su FamiLu</h1>
           <p className="text-familu-green">Crea il tuo account famiglia</p>
+          
+          {/* Piano selezionato */}
+          <div className="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center justify-center space-x-3">
+              {React.createElement(currentPlan.icon, { className: `h-6 w-6 text-familu-blue` })}
+              <div>
+                <h3 className="text-lg font-semibold text-familu-blue">
+                  Abbonamento {currentPlan.name}
+                </h3>
+                <p className="text-sm text-familu-green">
+                  {plan === 'friends' ? 'Gratuito' : currentPlan.price}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">
@@ -118,7 +159,10 @@ const RegisterFamily = () => {
             </div>
             <CardTitle className="text-2xl">Account Famiglia</CardTitle>
             <CardDescription>
-              Registrati per trovare i migliori operatori per la tua famiglia
+              {plan === 'friends' 
+                ? "Registrati gratuitamente per iniziare con FamiLu"
+                : `Completa la registrazione per attivare il piano ${currentPlan.name}`
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -236,7 +280,12 @@ const RegisterFamily = () => {
                 disabled={!formData.termsAccepted || loading} 
                 className="w-full text-sky-600 font-bold"
               >
-                {loading ? "Registrazione in corso..." : "Registrati come Famiglia"}
+                {loading 
+                  ? "Registrazione in corso..." 
+                  : plan === 'friends' 
+                    ? "Registrati Gratuitamente" 
+                    : `Registrati e Attiva ${currentPlan.name}`
+                }
               </Button>
             </form>
 
