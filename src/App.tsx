@@ -30,6 +30,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
+// Register components fix
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
