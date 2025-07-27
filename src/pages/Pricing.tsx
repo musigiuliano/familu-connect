@@ -171,7 +171,7 @@ const Pricing = () => {
                       variant={plan.popular ? "familu" : "familu-outline"} 
                       size="lg" 
                       onClick={() => handleSubscribe(plan.name.toLowerCase())} 
-                      className={`w-full ${plan.name === "Network" ? "text-familu-blue" : plan.name === "Alliance" ? "border-familu-green text-familu-green" : ""}`}
+                      className={`w-full ${plan.name === "Network" ? "text-familu-blue" : plan.name === "Alliance" ? "border-2 border-familu-green text-familu-green hover:bg-familu-green hover:text-white" : ""}`}
                     >
                       {plan.name === "Friends" ? "Iscriviti Ora" : "Sottoscrivi Ora"}
                     </Button>}
