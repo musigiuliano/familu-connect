@@ -52,10 +52,13 @@ const Pricing = () => {
       return;
     }
     if (plan === 'friends') {
+      // Per il piano gratuito, registra direttamente l'utente
       toast({
-        title: "Already on Friends plan",
-        description: "You're already on the free Friends plan!"
+        title: "Benvenuto nel piano Friends!",
+        description: "Il tuo account è ora attivo con il piano gratuito."
       });
+      // Aggiorna lo stato della subscription
+      checkSubscription();
       return;
     }
     try {
