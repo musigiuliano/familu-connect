@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
-const Dashboard = () => {
+const FamilyDashboard = () => {
   const [userType] = useState("family"); // This would come from auth context
 
   const familyData = {
@@ -70,10 +70,10 @@ const Dashboard = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Benvenuto, {familyData.name}
+              Dashboard Famiglia - {familyData.name}
             </h1>
             <p className="text-muted-foreground">
-              Piano attuale: <Badge variant="secondary">{familyData.subscriptionTier}</Badge>
+              Gestisci le richieste di assistenza e trova operatori qualificati • Piano: <Badge variant="secondary">{familyData.subscriptionTier}</Badge>
             </p>
           </div>
           <div className="flex items-center space-x-3 mt-4 sm:mt-0">
@@ -305,4 +305,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default FamilyDashboard;

@@ -17,7 +17,7 @@ import OrganizationProfile from "./pages/OrganizationProfile";
 import Search from "./pages/Search";
 import Pricing from "./pages/Pricing";
 import Resources from "./pages/Resources";
-import Dashboard from "./pages/Dashboard";
+import FamilyDashboard from "./pages/FamilyDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -36,7 +36,7 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><FamilyDashboard /></ProtectedRoute>} />
           <Route path="/profile/family" element={<ProtectedRoute><FamilyProfile /></ProtectedRoute>} />
           <Route path="/profile/operator" element={<ProtectedRoute><OperatorProfile /></ProtectedRoute>} />
           <Route path="/profile/organization" element={<ProtectedRoute><OrganizationProfile /></ProtectedRoute>} />
