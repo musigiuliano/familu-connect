@@ -122,10 +122,10 @@ const Pricing = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-stretch">
           {plans.map(plan => {
           const IconComponent = plan.icon;
-          return <Card key={plan.name} className={`relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 ${plan.popular ? 'ring-2 ring-familu-blue scale-105' : ''}`}>
+          return <Card key={plan.name} className={`relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 flex flex-col h-full ${plan.popular ? 'ring-2 ring-familu-blue scale-105' : ''}`}>
                 {plan.popular && <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-familu-blue text-primary-foreground px-4 py-1">
                       <Star className="h-3 w-3 mr-1" />
@@ -149,8 +149,8 @@ const Pricing = () => {
                   </div>
                 </CardHeader>
 
-                <CardContent>
-                  <div className="space-y-4 mb-8">
+                <CardContent className="flex-1 flex flex-col">
+                  <div className="space-y-4 flex-1">
                     <div>
                       <h4 className="font-semibold text-sm text-foreground mb-3">Cosa include:</h4>
                       <ul className="space-y-2">
