@@ -262,10 +262,10 @@ const Resources = () => {
                 <Card key={video.id} className="shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-shadow cursor-pointer">
                   <div className="relative aspect-video bg-muted rounded-t-lg flex items-center justify-center group">
                     <div className="absolute inset-0 bg-black/50 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Play className="h-12 w-12 text-white" />
+                      <Play className="h-12 w-12 text-familu-blue" />
                     </div>
                     <Video className="h-12 w-12 text-muted-foreground" />
-                    <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-xs">
+                    <div className="absolute bottom-2 right-2 bg-black/80 text-familu-blue px-2 py-1 rounded text-xs">
                       {video.duration}
                     </div>
                   </div>
@@ -334,17 +334,17 @@ const Resources = () => {
         </Tabs>
 
         {/* Newsletter Signup */}
-        <Card className="mt-16 bg-[var(--gradient-primary)] border-0 text-white">
+        <Card className="mt-16 bg-[var(--gradient-primary)] border-0 text-familu-blue">
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Rimani Aggiornato</h2>
-            <p className="text-white/90 mb-6 max-w-2xl mx-auto">
+            <p className="text-familu-green mb-6 max-w-2xl mx-auto">
               Iscriviti alla nostra newsletter per ricevere guide, consigli e aggiornamenti 
               sulle migliori pratiche nell'assistenza domiciliare.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <Input 
                 placeholder="La tua email" 
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                className="bg-white/10 border-white/20 text-familu-blue placeholder:text-muted-foreground"
               />
               <Button variant="secondary" className="bg-white text-primary hover:bg-white/90">
                 Iscriviti

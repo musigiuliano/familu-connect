@@ -121,7 +121,7 @@ const Pricing = () => {
           const IconComponent = plan.icon;
           return <Card key={plan.name} className={`relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 ${plan.popular ? 'ring-2 ring-familu-blue scale-105' : ''}`}>
                 {plan.popular && <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-familu-blue text-white px-4 py-1">
+                    <Badge className="bg-familu-blue text-primary-foreground px-4 py-1">
                       <Star className="h-3 w-3 mr-1" />
                       Più Popolare
                     </Badge>

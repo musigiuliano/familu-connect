@@ -107,8 +107,8 @@ const ForgotPassword = () => {
             alt="FamiLu" 
             className="h-16 w-auto mx-auto mb-4"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Recupera il tuo account</h1>
-          <p className="text-white/80">Ti aiutiamo a rientrare nel tuo account</p>
+          <h1 className="text-3xl font-bold text-familu-blue mb-2">Recupera il tuo account</h1>
+          <p className="text-familu-green">Ti aiutiamo a rientrare nel tuo account</p>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">

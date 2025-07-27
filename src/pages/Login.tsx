@@ -71,8 +71,8 @@ const Login = () => {
             alt="FamiLu" 
             className="h-16 w-auto mx-auto mb-4"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Bentornato su FamiLu</h1>
-          <p className="text-white/80">Accedi per trovare o offrire assistenza</p>
+          <h1 className="text-3xl font-bold text-familu-blue mb-2">Bentornato su FamiLu</h1>
+          <p className="text-familu-green">Accedi per trovare o offrire assistenza</p>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">

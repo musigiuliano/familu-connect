@@ -124,8 +124,8 @@ const ResetPassword = () => {
   if (!isValidSession) {
     return (
       <div className="min-h-screen bg-[var(--gradient-primary)] flex items-center justify-center p-4">
-        <div className="text-center text-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+        <div className="text-center text-familu-blue">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-familu-blue mx-auto mb-4"></div>
           <p>Verifica della sessione in corso...</p>
         </div>
       </div>
@@ -141,8 +141,8 @@ const ResetPassword = () => {
             alt="FamiLu" 
             className="h-16 w-auto mx-auto mb-4"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Nuova Password</h1>
-          <p className="text-white/80">Imposta la tua nuova password</p>
+          <h1 className="text-3xl font-bold text-familu-blue mb-2">Nuova Password</h1>
+          <p className="text-familu-green">Imposta la tua nuova password</p>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">

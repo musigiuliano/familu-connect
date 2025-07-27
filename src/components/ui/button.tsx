@@ -18,9 +18,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary-hover shadow-[var(--shadow-soft)]",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        familu: "bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-familu)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5",
-        "familu-outline": "border-2 border-familu-blue text-familu-blue bg-transparent hover:bg-familu-blue hover:text-white transition-all duration-300",
-        "familu-green": "bg-familu-green text-white shadow-[var(--shadow-soft)] hover:bg-secondary-hover transition-all duration-300",
+        familu: "bg-[var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-familu)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5",
+        "familu-outline": "border-2 border-familu-blue text-familu-blue bg-transparent hover:bg-familu-blue hover:text-primary-foreground transition-all duration-300",
+        "familu-green": "bg-familu-green text-primary-foreground shadow-[var(--shadow-soft)] hover:bg-secondary-hover transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",

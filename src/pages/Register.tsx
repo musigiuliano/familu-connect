@@ -126,8 +126,8 @@ const Register = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu" className="h-16 w-auto mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-white mb-2">Benvenuto su FamiLu</h1>
-          <p className="text-white/80">Crea il tuo account per iniziare</p>
+          <h1 className="text-3xl font-bold text-familu-blue mb-2">Benvenuto su FamiLu</h1>
+          <p className="text-familu-green">Crea il tuo account per iniziare</p>
         </div>
 
         <Card className="shadow-[var(--shadow-familu)] border-0 bg-white/95 backdrop-blur-sm">
