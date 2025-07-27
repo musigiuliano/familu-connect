@@ -12,21 +12,21 @@ const Index = () => {
     icon: Heart,
     color: "familu-blue",
     features: ["Ricerca operatori preparati", "Verifica le recensioni", "Comunicazione diretta"],
-    path: "/register"
+    path: "/pricing-families"
   }, {
     title: "Operatori",
     description: "Offri i tuoi servizi alle famiglie che ti cercano",
     icon: Users,
     color: "familu-green",
     features: ["Profilo professionale", "Gestione appuntamenti", "Valutazioni clienti"],
-    path: "/register"
+    path: "/pricing-operators"
   }, {
     title: "Organizzazioni",
     description: "Offri la tua organizzazione e i tuoi servizi",
     icon: Building,
     color: "primary",
     features: ["Profilo organizzazione", "Presentazione del team", "Verifica contatti"],
-    path: "/register"
+    path: "/pricing-organizations"
   }];
   return <div className="min-h-screen bg-background">
       <Navbar />
