@@ -287,10 +287,10 @@ const Pricing = () => {
 
         {/* CTA Section */}
         <div className="text-center mt-16 p-8 bg-[var(--gradient-primary)] rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-sky-500">
+          <h2 className="text-2xl font-bold mb-4 text-primary-foreground">
             Pronto a Iniziare con FamiLu?
           </h2>
-          <p className="mb-6 text-green-500 text-base font-bold">
+          <p className="mb-6 text-primary-foreground/90 text-base font-semibold">
             Unisciti a migliaia di famiglie e operatori che già si fidano di FamiLu
           </p>
           <Button variant="secondary" size="xl" className="bg-white text-primary hover:bg-white/90">

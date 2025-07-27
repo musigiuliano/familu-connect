@@ -35,8 +35,8 @@ const Index = () => {
       <section className="relative px-4 sm:px-6 bg-[var(--gradient-primary)] text-familu-blue lg:px-[12px] py-[4px]">
         <div className="max-w-7xl mx-auto text-center">
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu - Home, Care, Community" className="h-128 w-auto mx-auto" />
-          <h1 className="text-5xl mb-6 font-extrabold text-[#489dd0] text-center">Colleghiamo Famiglie  con Operatori di Assistenza domiciliare</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90 text-lime-500 font-extrabold">
+          <h1 className="text-5xl mb-6 font-extrabold text-familu-blue text-center">Colleghiamo Famiglie  con Operatori di Assistenza domiciliare</h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90 text-familu-green font-extrabold">
             FamiLu è la piattaforma che mette in contatto le famiglie che necessitano di assistenza 
             domiciliare con operatori e organizzazioni qualificate e verificate.
           </p>
@@ -45,7 +45,7 @@ const Index = () => {
               <Search className="h-5 w-5 mr-2" />
               Trova Assistenza
             </Button>
-            <Button variant="familu-outline" size="xl" onClick={() => navigate("/register")} className="border-white hover:bg-white text-lime-500">
+            <Button variant="familu-outline" size="xl" onClick={() => navigate("/register")} className="border-white hover:bg-white text-familu-green">
               Registrati Gratis
             </Button>
           </div>
@@ -56,7 +56,7 @@ const Index = () => {
       <section className="px-4 sm:px-6 lg:px-8 py-[39px]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4 text-sky-600">Una Piattaforma dove bisogni e soluzioni si incontrano</h2>
+            <h2 className="text-3xl font-bold mb-4 text-familu-blue">Una Piattaforma dove bisogni e soluzioni si incontrano</h2>
             <p className="text-lg text-muted-foreground">Seleziona il tuo ruolo e inizia subito</p>
           </div>
           
@@ -92,7 +92,7 @@ const Index = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl mb-4 font-bold text-green-500">
+            <h2 className="text-3xl mb-4 font-bold text-familu-green">
               Perché Scegliere FamiLu?
             </h2>
           </div>
@@ -127,13 +127,13 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-bold mb-4 text-green-500 text-6xl">
+          <h2 className="font-bold mb-4 text-familu-green text-6xl">
             Pronto a Iniziare?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
             Unisciti alle famiglie e operatori che già usano FamiLu
           </p>
-          <Button variant="familu" size="xl" onClick={() => navigate("/pricing")} className="text-sky-600 text-3xl font-bold rounded-3xl">
+          <Button variant="familu" size="xl" onClick={() => navigate("/pricing-selection")} className="text-white text-3xl font-bold rounded-3xl">
             Registrati Gratuitamente
           </Button>
         </div>
