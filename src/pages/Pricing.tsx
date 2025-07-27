@@ -93,7 +93,7 @@ const Pricing = () => {
     period: "/mese",
     description: "La scelta ideale per famiglie attive",
     icon: Users,
-    popular: true,
+    popular: false,
     features: ["Tutto di Friends +", "Ricerche illimitate", "Messaggi illimitati", "Filtri avanzati di ricerca", "Verifica profilo con badge", "Priorità nel customer support", "Accesso a webinar esclusivi", "Sistema di recensioni esteso"],
     limitations: []
   }, {
@@ -102,7 +102,7 @@ const Pricing = () => {
     period: "/mese",
     description: "Massima priorità e funzionalità premium",
     icon: Crown,
-    popular: false,
+    popular: true,
     features: ["Tutto di Network +", "Profilo in evidenza nei risultati", "Account manager dedicato", "Accesso anticipato a nuove funzionalità", "Analisi dettagliate del profilo", "Video-chiamate illimitate", "Consulenza personalizzata", "Supporto prioritario 24/7"],
     limitations: []
   }];
@@ -129,7 +129,7 @@ const Pricing = () => {
                 {plan.popular && <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-familu-blue text-primary-foreground px-4 py-1">
                       <Star className="h-3 w-3 mr-1" />
-                      Più Popolare
+                      Consigliato
                     </Badge>
                   </div>}
                 
