@@ -35,7 +35,7 @@ const Index = () => {
       <section className="relative px-4 sm:px-6 bg-[var(--gradient-primary)] text-white lg:px-[12px] py-[4px]">
         <div className="max-w-7xl mx-auto text-center">
           <img src="/lovable-uploads/33195e00-6787-46f5-ad3c-c9e98b9b6a0e.png" alt="FamiLu - Home, Care, Community" className="h-128 w-auto mx-auto" />
-          <h1 className="text-5xl mb-6 font-extrabold text-[#489dd0]">Colleghiamo Famiglie  con
+          <h1 className="text-5xl mb-6 font-extrabold text-[#489dd0] text-center">Colleghiamo Famiglie  con
   Operatori di Assistenza domiciliare</h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90 text-lime-500 font-extrabold">
             FamiLu è la piattaforma che mette in contatto le famiglie che necessitano di assistenza 
