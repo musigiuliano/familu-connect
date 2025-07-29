@@ -14,7 +14,7 @@ const Index = () => {
     features: ["Ricerca operatori preparati", "Verifica le recensioni", "Comunicazione diretta"],
     path: "/pricing-families"
   }, {
-    title: "Operatori",
+    title: "Operatori e professionisti",
     description: "Offri i tuoi servizi alle famiglie che ti cercano",
     icon: Users,
     color: "familu-green",
