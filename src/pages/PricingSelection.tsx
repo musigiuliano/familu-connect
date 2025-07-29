@@ -13,7 +13,7 @@ const PricingSelection = () => {
     bgColor: "familu-light-blue",
     route: "/pricing-families"
   }, {
-    title: "Operatore",
+    title: "Operatore o professionista",
     description: "Offro servizi di assistenza professionale",
     icon: UserCheck,
     color: "familu-green",
