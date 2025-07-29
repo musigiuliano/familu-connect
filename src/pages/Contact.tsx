@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -32,9 +33,21 @@ const Contact = () => {
     setIsLoading(true);
 
     try {
-      // Here you would typically send the data to your backend
-      // For now, we'll just show a success message
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Save the lead to Supabase
+      const { error } = await supabase
+        .from('leads')
+        .insert({
+          nome: formData.nome,
+          cognome: formData.cognome,
+          citta: formData.citta,
+          email: formData.email,
+          messaggio: formData.messaggio || null
+        });
+
+      if (error) {
+        console.error('Error saving lead:', error);
+        throw error;
+      }
       
       toast({
         title: "Messaggio inviato!",
@@ -50,6 +63,7 @@ const Contact = () => {
         messaggio: ""
       });
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Errore",
         description: "Si è verificato un errore. Riprova più tardi.",

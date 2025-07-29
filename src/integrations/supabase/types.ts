@@ -148,6 +148,42 @@ export type Database = {
           },
         ]
       }
+      leads: {
+        Row: {
+          citta: string
+          cognome: string
+          created_at: string
+          email: string
+          id: string
+          messaggio: string | null
+          nome: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          citta: string
+          cognome: string
+          created_at?: string
+          email: string
+          id?: string
+          messaggio?: string | null
+          nome: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          citta?: string
+          cognome?: string
+          created_at?: string
+          email?: string
+          id?: string
+          messaggio?: string | null
+          nome?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       operator_specializations: {
         Row: {
           certification_level: string | null
