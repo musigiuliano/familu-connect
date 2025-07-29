@@ -245,7 +245,7 @@ const Search = () => {
               <div className="relative">
                 <AddressInput label="" value={location} onChange={address => setLocation(address)} placeholder="Dove? (es. Roma, Milano)" id="location-search" />
               </div>
-              <Button variant="familu" size="lg" onClick={handleSearch} className="w-full text-lime-500 text-lg font-bold">
+              <Button variant="familu" size="lg" onClick={handleSearch} className="w-full text-lime-500 text-lg font-bold border-2 border-green-500">
                 <SearchIcon className="h-4 w-4 mr-2" />
                 {searchLoading ? "Cercando..." : "Cerca"}
               </Button>
