@@ -26,6 +26,7 @@ import Resources from "./pages/Resources";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import OperatorDashboard from "./pages/OperatorDashboard";
 import OrganizationDashboard from "./pages/OrganizationDashboard";
+import Contact from "./pages/Contact";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/pricing-operators" element={<PricingOperators />} />
             <Route path="/pricing-organizations" element={<PricingOrganizations />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

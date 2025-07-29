@@ -82,7 +82,7 @@ const PricingSelection = () => {
           <p className="mb-6 text-familu-green text-base">
             Contattaci per una consulenza gratuita e ti aiuteremo a trovare la soluzione migliore
           </p>
-          <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-white/90">
+          <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-white/90" onClick={() => navigate("/contact")}>
             Contattaci
           </Button>
         </div>
