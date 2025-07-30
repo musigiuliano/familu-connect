@@ -6,12 +6,19 @@ import { useNavigate } from "react-router-dom";
 const PricingSelection = () => {
   const navigate = useNavigate();
   const userTypes = [{
-    title: "Famiglia",
-    description: "Cerco assistenza per la mia famiglia e i miei cari",
+    title: "Famiglia - Abbonamenti",
+    description: "Cerco assistenza per la mia famiglia con abbonamento mensile",
     icon: Users,
     color: "familu-blue",
     bgColor: "familu-light-blue",
     route: "/pricing-families"
+  }, {
+    title: "Famiglia - Pagamenti Una Tantum",
+    description: "Accesso premium per specializzazione specifica",
+    icon: Users,
+    color: "familu-blue", 
+    bgColor: "familu-light-blue",
+    route: "/pricing-one-time"
   }, {
     title: "Operatore o professionista",
     description: "Offro servizi di assistenza professionale",
@@ -43,7 +50,7 @@ const PricingSelection = () => {
         </div>
 
         {/* User Type Selection Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {userTypes.map(type => {
           const IconComponent = type.icon;
           return <Card key={type.title} className="relative shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-familu)] transition-all duration-300 cursor-pointer group hover:scale-105" onClick={() => {

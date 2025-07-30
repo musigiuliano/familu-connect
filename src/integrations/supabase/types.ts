@@ -184,6 +184,56 @@ export type Database = {
         }
         Relationships: []
       }
+      one_time_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          expires_at: string | null
+          id: string
+          payment_type: string
+          specialization_id: string | null
+          status: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_type: string
+          specialization_id?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_type?: string
+          specialization_id?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "one_time_payments_specialization_id_fkey"
+            columns: ["specialization_id"]
+            isOneToOne: false
+            referencedRelation: "specializations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       operator_specializations: {
         Row: {
           certification_level: string | null
@@ -401,6 +451,7 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          one_time_price: number | null
           updated_at: string
         }
         Insert: {
@@ -410,6 +461,7 @@ export type Database = {
           description?: string | null
           id?: string
           name: string
+          one_time_price?: number | null
           updated_at?: string
         }
         Update: {
@@ -419,6 +471,7 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          one_time_price?: number | null
           updated_at?: string
         }
         Relationships: []

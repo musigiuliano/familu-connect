@@ -20,6 +20,7 @@ import OrganizationProfile from "./pages/OrganizationProfile";
 import Search from "./pages/Search";
 import Pricing from "./pages/PricingSelection";
 import PricingFamilies from "./pages/PricingFamilies";
+import PricingOneTime from "./pages/PricingOneTime";
 import PricingOperators from "./pages/PricingOperators";
 import PricingOrganizations from "./pages/PricingOrganizations";
 import Resources from "./pages/Resources";
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/search" element={<Search />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/pricing-families" element={<PricingFamilies />} />
+            <Route path="/pricing-one-time" element={<PricingOneTime />} />
             <Route path="/pricing-operators" element={<PricingOperators />} />
             <Route path="/pricing-organizations" element={<PricingOrganizations />} />
           <Route path="/resources" element={<Resources />} />
